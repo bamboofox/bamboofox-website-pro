@@ -37,6 +37,20 @@ html {
     scroll-behavior: smooth;
 }
 
+body{
+    animation: fadeIn 2s ease-in-out forwards;
+    --scrollTop: 0px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .main-header {
     position: relative;
 }
@@ -76,27 +90,31 @@ html {
     transition: var(--transition);
 }
 
-.layers__base {
+.layers_base {
     transform: translate3d(0, calc(var(--scrollTop) / 1.6), 0);
     z-index: 0;
 }
 
-.layers__fox {
-    transform: translate3d(calc(var(--index) * -2), calc(var(--scrollTop) / 2), 0);
+.layers_fox {
+    transform: translate3d(
+        calc(var(--index) * -2),
+        calc(var(--scrollTop) / 2),
+        0
+    );
     width: calc(var(--index) * 10);
     height: unset;
     aspect-ratio: 255 / 331;
 }
 
-.layers__middle {
+.layers_middle {
     transform: translate3d(0, calc(var(--scrollTop) / 2.5), 0);
 }
 
-.layers__front {
+.layers_front {
     transform: translate3d(0, calc(var(--scrollTop) / 5.7), 0);
 }
 
-.layers__header {
+.layers_header {
     z-index: 1;
     transition: var(--transition);
     will-change: transform;
@@ -107,12 +125,12 @@ html {
     transform: translate3d(0, calc(var(--scrollTop) / 2), 0);
 }
 
-.layers__title {
+.layers_title {
     font-size: calc(var(--index) * 2.5);
     letter-spacing: calc(var(--index) / 2.25);
 }
 
-.layers__caption {
+.layers_caption {
     font-size: calc(var(--index) / 1.175);
     letter-spacing: calc(var(--index) / 3.5);
     margin-top: calc(var(--index) * (-0.75));
@@ -129,14 +147,14 @@ html {
     position: relative;
 }
 
-.main-article__header {
+.main-article_header {
     text-align: center;
     text-transform: uppercase;
     font-size: calc(var(--index) * 1.8);
     letter-spacing: calc(var(--index) / 7.5);
 }
 
-.main-article__paragraph {
+.main-article_paragraph {
     max-width: 700px;
     text-align: center;
     font-size: calc(var(--index) * 0.9);
@@ -161,4 +179,53 @@ html {
     .container {
         padding: 0 20px;
     }
+}
+
+nav {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+}
+
+nav .container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 3rem;
+}
+
+nav img {
+    height: 5rem;
+}
+
+nav ul {
+    display: flex;
+    gap: 2rem;
+}
+
+nav ul li {
+    list-style: none;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+nav ul li a:hover {
+    color: #f7f7f7;
+}
+
+.nav_logo{
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.scrolled .nav_logo{
+    opacity: 1;
 }
