@@ -39,6 +39,8 @@ html {
 
 body {
     --scrollTop: 0px;
+    --mouseX: 0px;
+    --offsetX: calc((var(--mouseX) - 50vw) * -1);
     animation: fadeIn 1s ease-in-out forwards;
 }
 
@@ -95,13 +97,17 @@ header {
 }
 
 .layers_base {
-    transform: translate3d(0, calc(var(--scrollTop) / 1.6), 0);
+    transform: translate3d(
+        calc(var(--offsetX) / 20),
+        calc(var(--scrollTop) / 1.6),
+        0
+    );
     z-index: 0;
 }
 
 .layers_fox {
     transform: translate3d(
-        calc(var(--index) * -2),
+        calc(var(--offsetX) / 30 + var(--index) * -2),
         calc(var(--scrollTop) / 2),
         0
     );
@@ -111,11 +117,19 @@ header {
 }
 
 .layers_middle {
-    transform: translate3d(0, calc(var(--scrollTop) / 2.5), 0);
+    transform: translate3d(
+        calc(var(--offsetX) / 40),
+        calc(var(--scrollTop) / 2.5),
+        0
+    );
 }
 
 .layers_front {
-    transform: translate3d(0, calc(var(--scrollTop) / 5.7), 0);
+    transform: translate3d(
+        calc(var(--offsetX) / 50),
+        calc(var(--scrollTop) / 5.7),
+        0
+    );
 }
 
 .layers_header {
