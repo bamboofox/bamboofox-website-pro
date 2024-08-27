@@ -39,9 +39,12 @@ html {
 
 body {
     --scrollTop: 0px;
-    --mouseX: 0px;
+    --mouseX: 0;
+    --mouseY: 0;
     --offsetX: calc((var(--mouseX) - 50vw) * -1);
+    --offsetY: calc((var(--mouseY) - 50vh) * -1);
     animation: fadeIn 1s ease-in-out forwards;
+    color: var(--color);
 }
 
 header {
@@ -66,7 +69,7 @@ header {
     position: absolute;
     z-index: 100;
     width: 100%;
-    background-image: url(../img/ground.png);
+    background-image: url(../img/ground.webp);
     bottom: -100px;
     background-size: cover;
     background-position: center;
@@ -99,16 +102,18 @@ header {
 .layers_base {
     transform: translate3d(
         calc(var(--offsetX) / 20),
-        calc(var(--scrollTop) / 1.6),
+        calc(var(--scrollTop) / 1.6 + var(--offsetY) / 40),
         0
     );
     z-index: 0;
+    width: calc(100vw + 100vw / 20);
+    height: calc(100vh + 100vh / 40);
 }
 
 .layers_fox {
     transform: translate3d(
         calc(var(--offsetX) / 30 + var(--index) * -2),
-        calc(var(--scrollTop) / 2),
+        calc(var(--scrollTop) / 2 + var(--offsetY) / 60),
         0
     );
     width: calc(var(--index) * 10);
@@ -119,17 +124,21 @@ header {
 .layers_middle {
     transform: translate3d(
         calc(var(--offsetX) / 40),
-        calc(var(--scrollTop) / 2.5),
+        calc(var(--scrollTop) / 2.5 + var(--offsetY) / 80),
         0
     );
+    width: calc(100vw + 100vw / 40);
+    height: calc(100vh + 100vh / 80);
 }
 
 .layers_front {
     transform: translate3d(
         calc(var(--offsetX) / 50),
-        calc(var(--scrollTop) / 5.7),
+        calc(var(--scrollTop) / 5.7 + var(--offsetY) / 100),
         0
     );
+    width: calc(100vw + 100vw / 50);
+    height: calc(100vh + 100vh / 100);
 }
 
 .layers_header {
@@ -154,25 +163,57 @@ header {
     margin-top: calc(var(--index) * (-0.75));
 }
 
-.main-article {
+.horizontal-section {
+    position: relative;
+    height: calc(100vh + 100vw + 30vh);
+    transform: translate(min(0px, calc(130vh - var(--scrollTop))), 0);
+}
+.about {
     height: 100vh;
-    background-size: cover;
-    background-position: center;
-    color: var(--color);
+    background: url(/img/dungeon.webp) no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    z-index: -1;
+    top: 0;
+    left: 0;
+}
+
+.awards {
+    height: 100vh;
+    width: 100vw;
+    background: url(/img/treasure.webp) no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 100vw;
+}
+
+.awards_container {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    gap: calc(var(--index) * 2);
+    text-align: center;
+    margin-top: calc(var(--index) * 2);
 }
-
-.main-article_header {
+.award > img {
+    height: calc(var(--index) * 2.5);
+}
+h2 {
     text-align: center;
     text-transform: uppercase;
     font-size: calc(var(--index) * 1.8);
     letter-spacing: calc(var(--index) / 7.5);
 }
 
-.main-article_paragraph {
+p {
     max-width: 700px;
     text-align: center;
     font-size: calc(var(--index) * 0.9);
@@ -222,6 +263,9 @@ nav img {
 nav ul {
     display: flex;
     gap: 2rem;
+    justify-content: space-between;
+    width: 50vw;
+    max-width: 400px;
 }
 
 nav ul li {
