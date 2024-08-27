@@ -37,9 +37,13 @@ html {
     scroll-behavior: smooth;
 }
 
-body{
-    animation: fadeIn 2s ease-in-out forwards;
+body {
     --scrollTop: 0px;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+header {
+    animation: fadeIn 2s ease-in-out forwards;
 }
 
 @keyframes fadeIn {
@@ -189,7 +193,7 @@ nav {
     top: 0;
 }
 
-nav .container{
+nav .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -221,11 +225,68 @@ nav ul li a:hover {
     color: #f7f7f7;
 }
 
-.nav_logo{
+.nav_logo {
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 3s ease-in-out;
 }
 
-.scrolled .nav_logo{
+.scrolled .nav_logo {
     opacity: 1;
+}
+
+.cloud {
+    position: fixed;
+    height: 100vh;
+    z-index: 10;
+}
+
+.cloud1 {
+    top: -20%;
+    left: -10%;
+    animation: moveLeft 3s ease-in-out forwards;
+}
+
+.cloud2 {
+    top: 43%;
+    left: -10%;
+    animation: moveLeft 2s ease-in-out forwards;
+}
+
+.cloud3 {
+    top: -22%;
+    right: -12%;
+    animation: moveRight 4s ease-in-out forwards;
+}
+.cloud4 {
+    top: 32%;
+    right: -5%;
+    animation: moveRight 2s ease-in-out forwards;
+}
+
+.cloud5 {
+    top: 4%;
+    left: 19%;
+    animation: moveLeft 3s ease-in-out forwards;
+}
+
+@keyframes moveLeft {
+    from {
+        transform: none;
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes moveRight {
+    from {
+        transform: none;
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
