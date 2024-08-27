@@ -34,7 +34,7 @@ html {
     font-family: "Raleway", sans-serif;
     background: #010101;
     line-height: 1.55;
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
 }
 
 body {
@@ -193,7 +193,7 @@ header {
     background: url(/img/treasure.webp) no-repeat center center/cover;
     background-image: linear-gradient(
             transparent,
-            rgba(0, 0, 0, calc(-0.1 + var(--opacity)))
+            rgba(0, 0, 0, var(--opacity))
         ),
         url(/img/treasure.webp);
     display: flex;
@@ -376,12 +376,50 @@ nav ul li {
     list-style: none;
 }
 
-nav ul li a {
+a {
     text-decoration: none;
     color: #e9e9e9;
     font-size: 18px;
     font-weight: 500;
     transition: color 0.3s;
+}
+
+.social_container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 4rem);
+    transform: translate(-50%, -50%);
+    font-weight: 400;
+}
+
+footer {
+    height: 100vh;
+    width: 100vw;
+    background-color: #010101;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: var(--color);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: opacity 1s;
+    opacity: 1;
+}
+
+footer.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.vanished{
+    opacity: 0;
 }
 
 a::after {

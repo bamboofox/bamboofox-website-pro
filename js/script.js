@@ -7,14 +7,33 @@ window.addEventListener("scroll", e => {
     if (window.scrollY > window.innerHeight) {
         document.body.classList.add("scrolled");
         var a =
-            (window.scrollY - window.innerHeight - window.innerWidth / 2) /
-            window.innerWidth *2;
+            ((window.scrollY - window.innerHeight - window.innerWidth / 2) /
+                window.innerWidth) *
+            2;
         awards.style.setProperty("--opacity", Math.max(0, Math.min(1, a)));
+
+        // if scrolled to the bottom, add class .fixed to footer, scroll to top, and add .vanish to footer. After 1s, remove .fixed and .vanish
+        if (
+            window.scrollY + window.innerHeight + 2>=
+            document.documentElement.scrollHeight
+        ) {
+            document.body.style.overflow = "hidden";
+            document.querySelector("footer").classList.add("fixed");
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                document.querySelector("footer").classList.add("vanished");
+                setTimeout(() => {
+                    document.querySelector("footer").classList.remove("fixed");
+                    document
+                        .querySelector("footer")
+                        .classList.remove("vanished");
+                    document.body.style.overflow = "auto";
+                }, 1000);
+            }, 500);
+        }
     } else {
         document.body.classList.remove("scrolled");
     }
-
-    // get CSS transform for .awards_container
 });
 
 // 設置鼠標移動事件監聽器
