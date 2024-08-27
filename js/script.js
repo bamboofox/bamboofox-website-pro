@@ -1,5 +1,5 @@
 /** @format */
-const award_container = document.querySelector(".awards_container");
+const awards = document.querySelector(".awards");
 // 設置滾動事件監聽器
 window.addEventListener("scroll", e => {
     document.body.style.setProperty("--scrollTop", `${window.scrollY}px`);
@@ -8,8 +8,8 @@ window.addEventListener("scroll", e => {
         document.body.classList.add("scrolled");
         var a =
             (window.scrollY - window.innerHeight - window.innerWidth / 2) /
-            window.innerWidth *200;
-        award_container.style.opacity = Math.max(0, Math.min(100, a)) +"%";
+            window.innerWidth *2;
+        awards.style.setProperty("--opacity", Math.max(0, Math.min(1, a)));
     } else {
         document.body.classList.remove("scrolled");
     }

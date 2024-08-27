@@ -4,6 +4,8 @@
 *::after,
 *::before {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 :root {
@@ -29,8 +31,6 @@
 
 body,
 html {
-    padding: 0;
-    margin: 0;
     font-family: "Raleway", sans-serif;
     background: #010101;
     line-height: 1.55;
@@ -166,11 +166,16 @@ header {
 .horizontal-section {
     position: relative;
     height: calc(100vh + 100vw + 30vh);
-    transform: translate(min(0px, calc(130vh - var(--scrollTop))), 0);
+    transform: translate(
+        max(min(0px, calc(130vh - var(--scrollTop))), -100vw),
+        0
+    );
 }
 .about {
     height: 100vh;
+    padding: 2rem;
     background: url(/img/dungeon.webp) no-repeat center center/cover;
+    text-align: center;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -184,7 +189,13 @@ header {
 .awards {
     height: 100vh;
     width: 100vw;
+    padding: 2rem;
     background: url(/img/treasure.webp) no-repeat center center/cover;
+    background-image: linear-gradient(
+            transparent,
+            rgba(0, 0, 0, calc(-0.1 + var(--opacity)))
+        ),
+        url(/img/treasure.webp);
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -193,6 +204,7 @@ header {
     z-index: -1;
     top: 0;
     left: 100vw;
+    --opacity: 1;
 }
 
 .awards_container {
@@ -202,12 +214,105 @@ header {
     gap: calc(var(--index) * 2);
     text-align: center;
     margin-top: calc(var(--index) * 2);
+    opacity: var(--opacity);
 }
 .award > img {
-    height: calc(var(--index) * 2.5);
+    height: calc(var(--index) * 4);
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+.team-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    flex-wrap: wrap;
+    gap: calc(var(--index) * 2);
+    margin-top: 30vh;
+}
+
+#team-profile {
+    width: 13rem;
+    border-radius: 50%;
+}
+.c-table {
+    max-width: 800px;
+    margin: 2rem auto;
+    line-height: 1.5;
+    position: relative;
+}
+
+.c-table::after {
+    top: -1rem;
+    right: 0;
+    width: 0.5px;
+    height: 4rem;
+}
+.c-table > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+    gap: 10px; /* Adjust the gap between rows */
+}
+.c-table_header {
+    margin-left: 1rem;
+    padding-top: 0.3rem;
+    padding-left: 0.5rem;
+    border: #fff 1px solid;
+    border-bottom: none;
+    border-right: none;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.c-table_header::before,
+.c-table_header::after,
+.c-table::after {
+    content: "";
+    display: block;
+    position: absolute;
+    background: #fff;
+}
+.c-table_header::before {
+    bottom: 0;
+    left: 0;
+    width: 1.17rem;
+    height: 1px;
+    transform-origin: left;
+    transform: rotate(152deg);
+}
+.c-table_header::after {
+    height: 1.5rem;
+    width: 1.5rem;
+    background-color: #000;
+    border-left: #fff 1px solid;
+    top: 0;
+    transform: translate(47%, -52%) rotate(45deg);
+    right: 0;
+}
+.c-table_title {
+    display: contents; /* Use 'contents' to ignore the wrapper div */
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.c-table_row {
+    display: contents;
+}
+
+.c-table_content {
+    border: #fff 1px solid;
+    padding-block: 0.5rem;
+}
+
+.c-table_row > div {
+    margin-left: 1.5rem;
+}
+
+.team p {
+    max-width: 30rem;
 }
 h2 {
-    text-align: center;
     text-transform: uppercase;
     font-size: calc(var(--index) * 1.8);
     letter-spacing: calc(var(--index) / 7.5);
@@ -215,7 +320,6 @@ h2 {
 
 p {
     max-width: 700px;
-    text-align: center;
     font-size: calc(var(--index) * 0.9);
     margin-top: calc(var(--index) / 2);
 }
@@ -274,13 +378,27 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: #fff;
+    color: #e9e9e9;
     font-size: 18px;
     font-weight: 500;
+    transition: color 0.3s;
+}
+
+a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 1.5px;
+    background: #fff;
+    transition: width 0.3s;
+}
+
+a:hover::after {
+    width: 100%;
 }
 
 nav ul li a:hover {
-    color: #f7f7f7;
+    color: #ffffff;
 }
 
 .nav_logo {
