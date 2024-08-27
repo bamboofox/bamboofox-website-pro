@@ -109,16 +109,45 @@ header {
     width: calc(100vw + 100vw / 20);
     height: calc(100vh + 100vh / 40);
 }
+.layers_bamboo {
+    transform: translate3d(
+        calc(var(--offsetX) / 25 - var(--index) * 4.5),
+        calc(var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) * 3.75),
+        0
+    );
+    width: calc(var(--index) * 11);
+    height: unset;
+    aspect-ratio: 255 / 331;
+    transform-origin: bottom right;
+    animation: bambooRotate 10s linear infinite alternate;
+}
+
+@keyframes bambooRotate {
+    0% {
+        transform: translate3d(
+            calc(var(--offsetX) / 25 - var(--index) * 4.5),
+            calc(var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) * 3.75),
+            0
+        ) rotate(0deg);
+    }
+    100% {
+        transform: translate3d(
+            calc(var(--offsetX) / 25 - var(--index) * 4.5),
+            calc(var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) * 3.75),
+            0
+        ) rotate(-7deg);
+    }
+}
 
 .layers_fox {
     transform: translate3d(
-        calc(var(--offsetX) / 30 + var(--index) * -2),
+        calc(var(--offsetX) / 30),
         calc(var(--scrollTop) / 2 + var(--offsetY) / 60),
         0
     );
     width: calc(var(--index) * 10);
     height: unset;
-    aspect-ratio: 255 / 331;
+    aspect-ratio: 1148 / 1574;
 }
 
 .layers_middle {
@@ -390,7 +419,7 @@ a {
     justify-content: center;
     position: absolute;
     left: 50%;
-    top: calc(50% + 4rem);
+    top: calc(50% + 4.5rem);
     transform: translate(-50%, -50%);
     font-weight: 400;
 }
@@ -418,7 +447,7 @@ footer.fixed {
     z-index: 1000;
 }
 
-.vanished{
+.vanished {
     opacity: 0;
 }
 
