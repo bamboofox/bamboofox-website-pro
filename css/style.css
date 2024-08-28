@@ -39,8 +39,8 @@ html {
 
 body {
     --scrollTop: 0px;
-    --mouseX: 0;
-    --mouseY: 0;
+    --mouseX: 0px;
+    --mouseY: 0px;
     --offsetX: calc((var(--mouseX) - 50vw) * -1);
     --offsetY: calc((var(--mouseY) - 50vh) * -1);
     animation: fadeIn 1s ease-in-out forwards;
