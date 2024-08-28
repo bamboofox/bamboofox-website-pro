@@ -34,7 +34,6 @@ html {
     font-family: "Raleway", sans-serif;
     background: #010101;
     line-height: 1.55;
-    overflow-x: hidden!important;
     /* scroll-behavior: smooth; */
 }
 
@@ -46,6 +45,7 @@ body {
     --offsetY: calc((var(--mouseY) - 50vh) * -1);
     animation: fadeIn 1s ease-in-out forwards;
     color: var(--color);
+    overflow-x: hidden;
 }
 
 header {
