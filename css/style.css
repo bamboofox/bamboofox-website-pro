@@ -207,7 +207,6 @@ header {
         max(min(0px, calc(130vh - var(--scrollTop))), -100vw),
         0
     );
-    overflow-x: hidden;
 }
 .about {
     height: 100vh;
