@@ -45,7 +45,6 @@ body {
     --offsetY: calc((var(--mouseY) - 50vh) * -1);
     animation: fadeIn 1s ease-in-out forwards;
     color: var(--color);
-    overflow-x: hidden;
 }
 
 header {
@@ -208,6 +207,7 @@ header {
         max(min(0px, calc(130vh - var(--scrollTop))), -100vw),
         0
     );
+    overflow-x: hidden;
 }
 .about {
     height: 100vh;
