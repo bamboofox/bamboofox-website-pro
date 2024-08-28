@@ -34,6 +34,7 @@ html {
     font-family: "Raleway", sans-serif;
     background: #010101;
     line-height: 1.55;
+    overflow-x: hidden!important;
     /* scroll-behavior: smooth; */
 }
 
@@ -125,17 +126,25 @@ header {
 @keyframes bambooRotate {
     0% {
         transform: translate3d(
-            calc(var(--offsetX) / 25 - var(--index) * 4.5),
-            calc(var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) * 3.75),
-            0
-        ) rotate(0deg);
+                calc(var(--offsetX) / 25 - var(--index) * 4.5),
+                calc(
+                    var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) *
+                        3.75
+                ),
+                0
+            )
+            rotate(0deg);
     }
     100% {
         transform: translate3d(
-            calc(var(--offsetX) / 25 - var(--index) * 4.5),
-            calc(var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) * 3.75),
-            0
-        ) rotate(-7deg);
+                calc(var(--offsetX) / 25 - var(--index) * 4.5),
+                calc(
+                    var(--scrollTop) / 2 + var(--offsetY) / 50 - var(--index) *
+                        3.75
+                ),
+                0
+            )
+            rotate(-7deg);
     }
 }
 
@@ -240,6 +249,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: calc(var(--index) * 2);
     text-align: center;
     margin-top: calc(var(--index) * 2);
@@ -336,6 +346,9 @@ header {
 
 .c-table_row > div {
     margin-left: 1.5rem;
+}
+.team {
+    padding: 2rem;
 }
 
 .team p {
