@@ -1,17 +1,14 @@
 ---
-interface Props {
-	date: Date;
-}
-
-const { date } = Astro.props;
+const { date, includeYear = true } = Astro.props;
 ---
 
 <time datetime={date.toISOString()}>
 	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
+		date.toLocaleDateString("zh-TW", {
+			year: includeYear ? "numeric" : undefined,
+			month: "long",
+			day: "numeric",
+			timeZone: "Asia/Taipei"
 		})
 	}
 </time>

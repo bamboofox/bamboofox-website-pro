@@ -1,0 +1,128 @@
+---
+const { tone = "fern", category = "文章", title = "", large = false, decorative = false } = Astro.props;
+---
+
+<div
+	class:list={["post-cover", `tone-${tone}`, { large }]}
+	aria-hidden={decorative ? "true" : undefined}
+	role={decorative ? undefined : "img"}
+	aria-label={decorative ? undefined : `${category}：${title}`}
+>
+	<svg class="bamboo-strokes" viewBox="0 0 520 300" preserveAspectRatio="none" aria-hidden="true">
+		<path d="M50 340C95 253 121 162 139-34"></path>
+		<path d="M109 179L45 139M119 116L183 74M134 36L86 7"></path>
+		<path d="M412 333C381 212 387 112 424-35"></path>
+		<path d="M392 206L456 158M400 123L344 78M418 22L477-4"></path>
+	</svg>
+	<span class="orbit orbit-one"></span>
+	<span class="orbit orbit-two"></span>
+	<span class="cover-index">BFX / {category === "Write-up" ? "WU" : category}</span>
+	<img src="/logo.svg" alt="" loading="lazy" />
+</div>
+
+<style>
+	.post-cover {
+		position: relative;
+		min-height: 220px;
+		overflow: hidden;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-md);
+		isolation: isolate;
+	}
+
+	.post-cover.large {
+		min-height: 410px;
+	}
+
+	.tone-fern {
+		background: linear-gradient(145deg, #276a44, #0e4936 72%);
+	}
+
+	.tone-amber {
+		background: linear-gradient(145deg, #f7931d, #cf641d 72%);
+	}
+
+	.tone-mist {
+		background: linear-gradient(145deg, #eaf2c8, #9fd57c 72%);
+	}
+
+	.tone-night {
+		background: linear-gradient(145deg, #041f18, #176247 72%);
+	}
+
+	.bamboo-strokes {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		color: rgba(255, 253, 244, 0.24);
+	}
+
+	.bamboo-strokes path {
+		fill: none;
+		stroke: currentColor;
+		stroke-linecap: round;
+		stroke-width: 9;
+	}
+
+	.orbit {
+		position: absolute;
+		border: 1px solid rgba(255, 253, 244, 0.25);
+		border-radius: 50%;
+	}
+
+	.orbit-one {
+		right: -10%;
+		bottom: -42%;
+		width: 62%;
+		aspect-ratio: 1;
+	}
+
+	.orbit-two {
+		right: 7%;
+		bottom: -24%;
+		width: 38%;
+		aspect-ratio: 1;
+	}
+
+	.cover-index {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		z-index: 2;
+		padding: 0.35rem 0.6rem;
+		border: 1px solid currentColor;
+		border-radius: 999px;
+		color: var(--white);
+		font-family: var(--font-sans);
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+	}
+
+	.tone-mist .cover-index {
+		color: var(--pine-950);
+	}
+
+	.post-cover img {
+		position: absolute;
+		right: 6%;
+		bottom: -13%;
+		z-index: 1;
+		width: min(46%, 190px);
+		max-height: 95%;
+		object-fit: contain;
+		object-position: bottom;
+		transform: rotate(4deg);
+	}
+
+	.large img {
+		width: min(44%, 300px);
+	}
+
+	@media (max-width: 680px) {
+		.post-cover.large {
+			min-height: 300px;
+		}
+	}
+</style>

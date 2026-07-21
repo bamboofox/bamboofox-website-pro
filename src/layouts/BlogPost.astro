@@ -1,86 +1,344 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
+import ArrowRight from "phosphor-astro/ArrowRight.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import PostCover from "../components/PostCover.astro";
+import SiteLayout from "./SiteLayout.astro";
 
-type Props = CollectionEntry<'blog'>['data'];
-
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags = [], coverTone = "fern", slug, authors = [], image, language = "zh-Hant", legacy = false, legacySource, jsonLd } = Astro.props;
+const authorMeta = authors.map(author => ({ name: author.data.name, url: new URL(`/authors/${author.id}/`, Astro.site).href }));
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+<SiteLayout
+	title={`${title}｜BambooFox`}
+	description={description}
+	type="article"
+	mainClass="article-page"
+	lang={language === "en" ? "en" : "zh-Hant-TW"}
+	locale={language === "en" ? "en_US" : "zh_TW"}
+	canonical={`/blog/${slug}/`}
+	image={image}
+	imageAlt={image === "/brand/logo-square.webp" ? "BambooFox 標誌" : `${title}文章封面`}
+	authors={authorMeta}
+	publishedTime={pubDate}
+	modifiedTime={updatedDate || pubDate}
+	tags={tags}
+	section={category}
+	jsonLd={jsonLd}
+>
+	<article>
+		<header class="article-hero shell">
+			<div class="article-heading">
+				<nav class="breadcrumbs" aria-label="麵包屑導覽">
+					<a href="/">首頁</a><span aria-hidden="true">/</span><a href="/blog/">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span>
+				</nav>
+				<div class="article-labels">
+					<span>{category}</span>
+					<FormattedDate date={pubDate} />
+					{legacy && <span class="archive-label">歷史文章</span>}
+				</div>
+				<h1>{title}</h1>
+				<p>{description}</p>
+				<div class="article-byline">
+					<span class="byline-label">作者</span>
+					{
+						authors.map(author => (
+							<a rel="author" href={`/authors/${author.id}/`}>
+								<img src={author.data.avatar} width="30" height="30" alt="" loading="lazy" decoding="async" />
+								<span>{author.data.name}</span>
+							</a>
+						))
+					}
+				</div>
+				<div class="article-tags" aria-label="文章標籤">
+					{tags.map(tag => <span>#{tag}</span>)}
+				</div>
+			</div>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+			<PostCover tone={coverTone} category={category} title={title} large />
+		</header>
+
+		<div class="article-rule shell">
+			<span>BAMBOOFOX TECHNICAL ARTICLE</span>
+			<span>READ THE ARTICLE ↓</span>
+		</div>
+
+		<div class="prose article-body">
+			{
+				legacy && (
+					<aside class="archive-note">
+						<strong>歷史文章</strong>
+						<p>本文由 BambooFox 舊站遷移，保留原始技術內容與發布日期；部分外部服務或題目環境可能已停止運作。</p>
+						{legacySource && (
+							<a href={legacySource} target="_blank" rel="noreferrer">
+								查看舊站原始檔案
+							</a>
+						)}
+					</aside>
+				)
+			}
+			<slot />
+
+			{
+				updatedDate && (
+					<p class="updated-date">
+						最後更新：
+						<FormattedDate date={updatedDate} />
+					</p>
+				)
+			}
+		</div>
+
+		<footer class="article-footer shell">
+			<div>
+				<img src="/logo.svg" width="54" height="70" alt="" />
+				<p>延伸閱讀 BambooFox 的技術文章、教學與競賽 Write-up。</p>
+			</div>
+			<a class="button" href="/blog/">
+				瀏覽更多文章 <ArrowRight width={18} height={18} weight="bold" aria-hidden="true" />
+			</a>
+		</footer>
+	</article>
+</SiteLayout>
+
+<style>
+	.article-hero {
+		display: grid;
+		grid-template-columns: 1.05fr 0.95fr;
+		align-items: center;
+		gap: clamp(3rem, 7vw, 7rem);
+		padding-block: 6rem 4.5rem;
+	}
+
+	.breadcrumbs {
+		display: inline-flex;
+		align-items: center;
+		max-width: 100%;
+		gap: 0.55rem;
+		margin-bottom: 3rem;
+		color: var(--muted);
+		font-size: 0.78rem;
+		font-weight: 700;
+	}
+
+	.breadcrumbs a:hover {
+		color: var(--orange-soft);
+	}
+
+	.breadcrumbs span:last-child {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.article-labels {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		margin-bottom: 1rem;
+		color: var(--muted);
+		font-family: var(--font-sans);
+		font-size: 0.72rem;
+		font-weight: 700;
+	}
+
+	.article-labels > span {
+		padding: 0.3rem 0.65rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		color: var(--orange-soft);
+	}
+
+	.article-labels .archive-label {
+		border-color: rgba(247, 147, 29, 0.5);
+		color: var(--orange-soft);
+	}
+
+	.article-heading h1 {
+		margin-bottom: 1.4rem;
+		font-size: clamp(2.85rem, 5.5vw, 5.5rem);
+		line-height: 1.02;
+		letter-spacing: -0.065em;
+	}
+
+	.article-heading > p {
+		max-width: 650px;
+		color: var(--muted);
+		font-size: 1.05rem;
+	}
+
+	.article-byline {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 1.2rem;
+		color: var(--muted);
+		font-size: 0.82rem;
+	}
+
+	.article-byline > .byline-label {
+		margin-right: 0.3rem;
+		color: rgba(168, 198, 183, 0.7);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		text-transform: uppercase;
+	}
+
+	.article-byline a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.2rem 0.55rem 0.2rem 0.25rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		color: var(--white);
+		font-weight: 800;
+	}
+
+	.article-byline img {
+		width: 30px;
+		max-width: 100%;
+		height: 30px;
+		border: 1px solid var(--line-strong);
+		border-radius: 50%;
+		background: var(--pine-950);
+		object-fit: cover;
+	}
+
+	.article-byline a:hover {
+		color: var(--orange-soft);
+	}
+
+	.article-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-top: 1.7rem;
+		color: rgba(168, 198, 183, 0.7);
+		font-family: var(--font-sans);
+		font-size: 0.7rem;
+	}
+
+	.article-rule {
+		display: flex;
+		justify-content: space-between;
+		padding-block: 1rem;
+		border-block: 1px solid var(--line);
+		color: rgba(168, 198, 183, 0.55);
+		font-family: var(--font-sans);
+		font-size: 0.58rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+	}
+
+	.article-body {
+		padding-block: 6rem;
+	}
+
+	.archive-note {
+		margin-bottom: 3rem;
+		padding: 1.35rem 1.5rem;
+		border: 1px solid var(--line-strong);
+		border-left: 4px solid var(--orange);
+		border-radius: var(--radius-sm);
+		background: rgba(4, 31, 24, 0.46);
+	}
+
+	.archive-note strong {
+		color: var(--orange-soft);
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		text-transform: uppercase;
+	}
+
+	.archive-note p {
+		margin-block: 0.55rem;
+		color: var(--muted);
+	}
+
+	.archive-note a {
+		color: var(--white);
+		font-size: 0.82rem;
+		font-weight: 800;
+	}
+
+	.updated-date {
+		margin-top: 4rem;
+		padding-top: 1.2rem;
+		border-top: 1px solid var(--line);
+		color: var(--muted) !important;
+		font-size: 0.82rem;
+	}
+
+	.article-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+		margin-bottom: 7rem;
+		padding: 2.2rem;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-md);
+		background: rgba(4, 31, 24, 0.48);
+	}
+
+	.article-footer > div {
+		display: flex;
+		max-width: 670px;
+		align-items: center;
+		gap: 1.2rem;
+	}
+
+	.article-footer img {
+		width: 54px;
+		flex: 0 0 auto;
+	}
+
+	.article-footer p {
+		margin: 0;
+		color: var(--muted);
+	}
+
+	@media (max-width: 900px) {
+		.article-hero {
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
+		}
+
+		.article-hero :global(.post-cover) {
+			order: -1;
+		}
+	}
+
+	@media (max-width: 680px) {
+		.article-hero {
+			padding-block: 3.5rem;
+		}
+
+		.breadcrumbs {
+			margin-bottom: 2rem;
+		}
+
+		.article-heading h1 {
+			font-size: clamp(2.65rem, 12vw, 4.2rem);
+		}
+
+		.article-rule span:last-child {
+			display: none;
+		}
+
+		.article-body {
+			padding-block: 4rem;
+		}
+
+		.article-footer {
+			align-items: flex-start;
+			flex-direction: column;
+			margin-bottom: 5rem;
+		}
+
+		.article-footer .button {
+			width: 100%;
+		}
+	}
+</style>

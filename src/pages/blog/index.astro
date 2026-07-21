@@ -1,114 +1,502 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import ArrowRight from "phosphor-astro/ArrowRight.astro";
+import MagnifyingGlass from "phosphor-astro/MagnifyingGlass.astro";
+import RssSimple from "phosphor-astro/RssSimple.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+import PostCover from "../../components/PostCover.astro";
+import { SITE_DESCRIPTION } from "../../consts.js";
+import { getBlogSchema } from "../../lib/seo.js";
+import SiteLayout from "../../layouts/SiteLayout.astro";
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const authors = await getCollection("authors");
+const authorsById = new Map(authors.map(author => [author.id, author]));
+const categories = ["全部", "規章", "文章", "教學", "Write-up"];
+const blogURL = new URL("/blog/", Astro.site).href;
+const jsonLd = [
+	getBlogSchema(Astro.site, posts),
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{ "@type": "ListItem", position: 1, name: "BambooFox", item: new URL("/", Astro.site).href },
+			{ "@type": "ListItem", position: 2, name: "Blog", item: blogURL }
+		]
+	}
+];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+<SiteLayout title="資安技術文章與 CTF Write-up｜BambooFox" description={`社群規範、資安文章、教學與 CTF Write-up。${SITE_DESCRIPTION}`} jsonLd={jsonLd} mainClass="blog-page">
+	<section class="blog-hero shell">
+		<div class="blog-heading">
+			<nav class="breadcrumbs" aria-label="麵包屑導覽"><a href="/">首頁</a><span>/</span><span aria-current="page">Blog</span></nav>
+			<p class="eyebrow">BambooFox / Blog</p>
+			<h1><span class="title-line">資安文章、教學</span><span class="title-line accent">與競賽紀錄。</span></h1>
+		</div>
+		<div class="blog-intro">
+			<p>收錄社群規範、技術文章、入門教學與競賽 Write-up，內容著重可重現的操作步驟、分析方法與實務經驗。</p>
+			<a class="rss-link" href="/rss.xml">
+				<RssSimple width={18} height={18} weight="bold" aria-hidden="true" />
+				訂閱 RSS
+			</a>
+		</div>
+	</section>
+
+	<section class="journal-shell shell" aria-labelledby="article-list-title">
+		<label class="search-field" for="post-search">
+			<MagnifyingGlass width={20} height={20} weight="bold" aria-hidden="true" />
+			<span class="sr-only">搜尋文章</span>
+			<input id="post-search" type="search" placeholder="搜尋標題、作者或標籤" autocomplete="off" />
+		</label>
+		<div class="filter-row">
+			<div class="filters" role="group" aria-label="依類別篩選文章">
+				{
+					categories.map((category, index) => (
+						<button type="button" class:list={["filter-button", { active: index === 0 }]} data-filter={category} aria-pressed={index === 0 ? "true" : "false"}>
+							{category}
+						</button>
+					))
 				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
+			</div>
+			<p id="filter-status" class="filter-count" aria-live="polite">{posts.length} 篇文章</p>
+		</div>
+
+		<h2 id="article-list-title" class="sr-only">文章列表</h2>
+		<div class="article-list">
+			{
+				posts.map((post, index) => {
+					const postAuthors = post.data.authors.map(reference => authorsById.get(reference.id)).filter(Boolean);
+					const searchable = [post.data.title, post.data.description, ...post.data.tags, ...postAuthors.map(author => author.data.name)].join(" ").toLocaleLowerCase("zh-Hant-TW");
+					return (
+						<article class:list={["article-card", { lead: index === 0 }]} data-category={post.data.category} data-search={searchable}>
+							<a href={`/blog/${post.data.slug}/`} aria-label={`閱讀：${post.data.title}`}>
+								<PostCover tone={post.data.coverTone} category={post.data.category} title={post.data.title} large={index === 0} />
+								<div class="article-copy">
+									<div class="article-meta">
+										<span>{post.data.category}</span>
 										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+										{post.data.legacy && <span class="legacy-label">歷史文章</span>}
+									</div>
+									<h3>{post.data.title}</h3>
+									<p>{post.data.description}</p>
+									<div class="card-authors" aria-label={`作者：${postAuthors.map(author => author.data.name).join("、")}`}>
+										<span class="card-author-label">作者</span>
+										{postAuthors.map(author => (
+											<span class="card-author">
+												<img src={author.data.avatar} width="24" height="24" alt="" loading="lazy" decoding="async" />
+												<span>{author.data.name}</span>
+											</span>
+										))}
+									</div>
+									<div class="article-footer">
+										<div class="tag-list" aria-label="文章標籤">
+											{post.data.tags.slice(0, 3).map(tag => (
+												<span>#{tag}</span>
+											))}
+										</div>
+										<span class="read-link">
+											閱讀文章 <ArrowRight width={17} height={17} weight="bold" aria-hidden="true" />
+										</span>
+									</div>
+								</div>
+							</a>
+						</article>
+					);
+				})
+			}
+		</div>
+
+		<div id="filter-empty" class="filter-empty" hidden>
+			<img src="/logo.svg" width="52" height="68" alt="" />
+			<p>這個分類目前沒有文章。</p>
+		</div>
+	</section>
+
+	<script>
+		const buttons = document.querySelectorAll("[data-filter]");
+		const cards = document.querySelectorAll("[data-category]");
+		const status = document.querySelector("#filter-status");
+		const empty = document.querySelector("#filter-empty");
+		const search = document.querySelector("#post-search");
+		let activeFilter = "全部";
+
+		const updateResults = () => {
+			const query = search.value.trim().toLocaleLowerCase("zh-Hant-TW");
+			let visible = 0;
+
+			cards.forEach(card => {
+				const matchesCategory = activeFilter === "全部" || card.dataset.category === activeFilter;
+				const matchesQuery = !query || card.dataset.search.includes(query);
+				card.hidden = !(matchesCategory && matchesQuery);
+				if (!card.hidden) visible += 1;
+			});
+
+			status.textContent = `${visible} 篇文章`;
+			empty.hidden = visible !== 0;
+		};
+
+		buttons.forEach(button => {
+			button.addEventListener("click", () => {
+				activeFilter = button.dataset.filter;
+
+				buttons.forEach(item => {
+					const active = item === button;
+					item.classList.toggle("active", active);
+					item.setAttribute("aria-pressed", String(active));
+				});
+
+				updateResults();
+			});
+		});
+
+		search.addEventListener("input", updateResults);
+	</script>
+</SiteLayout>
+
+<style>
+	.blog-hero {
+		display: grid;
+		grid-template-columns: 1.35fr 0.65fr;
+		align-items: end;
+		gap: clamp(3rem, 6vw, 7rem);
+		padding-block: 7rem 5rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.breadcrumbs {
+		display: flex;
+		gap: 0.55rem;
+		margin-bottom: 2.5rem;
+		color: var(--muted);
+		font-size: 0.76rem;
+	}
+
+	.breadcrumbs a:hover {
+		color: var(--orange-soft);
+	}
+
+	.blog-heading h1 {
+		margin-bottom: 0;
+		font-size: clamp(2.9rem, 5.8vw, 5.9rem);
+		line-height: 0.98;
+		letter-spacing: -0.07em;
+	}
+
+	.blog-heading h1 .title-line {
+		display: block;
+		white-space: nowrap;
+	}
+
+	.blog-heading h1 .accent {
+		color: var(--orange);
+	}
+
+	.blog-intro {
+		padding-bottom: 0.6rem;
+	}
+
+	.blog-intro > p {
+		color: var(--muted);
+	}
+
+	.rss-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.55rem 0.8rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		color: var(--orange-soft);
+		font-size: 0.8rem;
+		font-weight: 800;
+	}
+
+	.journal-shell {
+		padding-block: 3rem 8rem;
+	}
+
+	.search-field {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		max-width: 560px;
+		margin-bottom: 1.5rem;
+		padding: 0.8rem 1rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		color: var(--muted);
+	}
+
+	.search-field:focus-within {
+		border-color: var(--orange);
+		color: var(--orange-soft);
+	}
+
+	.search-field input {
+		width: 100%;
+		border: 0;
+		outline: 0;
+		background: transparent;
+		color: var(--white);
+		font: inherit;
+	}
+
+	.search-field input::placeholder {
+		color: rgba(168, 198, 183, 0.7);
+	}
+
+	.filter-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.filter-button {
+		padding: 0.55rem 0.9rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--muted);
+		font-size: 0.8rem;
+		font-weight: 800;
+		cursor: pointer;
+		transition:
+			background-color 160ms ease,
+			color 160ms ease,
+			border-color 160ms ease;
+	}
+
+	.filter-button:hover,
+	.filter-button.active {
+		border-color: var(--moss-200);
+		background: var(--moss-200);
+		color: var(--pine-950);
+	}
+
+	.filter-count {
+		margin: 0;
+		color: var(--muted);
+		font-family: var(--font-sans);
+		font-size: 0.72rem;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	.article-list {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 3rem 1.3rem;
+	}
+
+	.article-card[hidden] {
+		display: none;
+	}
+
+	.article-card.lead {
+		grid-column: span 2;
+	}
+
+	.article-card.lead a {
+		display: grid;
+		grid-template-columns: 1.15fr 0.85fr;
+		align-items: center;
+		gap: clamp(2rem, 5vw, 5rem);
+	}
+
+	.article-copy {
+		padding: 1.2rem 0.25rem 0;
+	}
+
+	.lead .article-copy {
+		padding: 1.5rem 0;
+	}
+
+	.article-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.65rem;
+		color: var(--muted);
+		font-family: var(--font-sans);
+		font-size: 0.7rem;
+		font-weight: 700;
+	}
+
+	.article-meta span:first-child {
+		padding: 0.25rem 0.6rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		color: var(--orange-soft);
+	}
+
+	.article-meta .legacy-label {
+		color: var(--orange-soft);
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		text-transform: uppercase;
+	}
+
+	.article-copy h3 {
+		margin-bottom: 0.65rem;
+		font-size: clamp(1.65rem, 3vw, 2.8rem);
+		transition: color 180ms ease;
+	}
+
+	.lead .article-copy h3 {
+		font-size: clamp(2.5rem, 5vw, 4.8rem);
+	}
+
+	.article-card a:hover h3 {
+		color: var(--orange-soft);
+	}
+
+	.article-copy > p {
+		margin-bottom: 1.2rem;
+		color: var(--muted);
+	}
+
+	.article-copy > .card-authors {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: -0.6rem;
+		margin-bottom: 1.2rem;
+		color: var(--muted);
+		font-size: 0.75rem;
+		font-weight: 700;
+	}
+
+	.card-author-label {
+		margin-right: 0.15rem;
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		text-transform: uppercase;
+	}
+
+	.card-author {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.card-author img {
+		width: 24px;
+		max-width: 100%;
+		height: 24px;
+		border: 1px solid var(--line-strong);
+		border-radius: 50%;
+		background: var(--pine-950);
+		object-fit: cover;
+	}
+
+	.article-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.tag-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		color: rgba(168, 198, 183, 0.65);
+		font-family: var(--font-sans);
+		font-size: 0.68rem;
+	}
+
+	.read-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		color: var(--orange-soft);
+		font-size: 0.78rem;
+		font-weight: 800;
+		white-space: nowrap;
+	}
+
+	.filter-empty {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		gap: 1rem;
+		min-height: 320px;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-md);
+		color: var(--muted);
+		text-align: center;
+	}
+
+	.filter-empty[hidden] {
+		display: none;
+	}
+
+	.filter-empty img {
+		width: 52px;
+	}
+
+	.filter-empty p {
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.blog-hero {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.blog-intro {
+			max-width: 620px;
+		}
+
+		.article-card.lead a {
+			grid-template-columns: 1fr;
+			gap: 0.8rem;
+		}
+	}
+
+	@media (max-width: 680px) {
+		.blog-hero {
+			padding-block: 4.5rem 3rem;
+		}
+
+		.blog-heading h1 {
+			font-size: clamp(2.7rem, 12vw, 4.2rem);
+		}
+
+		.filter-row {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		.article-list {
+			grid-template-columns: 1fr;
+		}
+
+		.article-card.lead {
+			grid-column: auto;
+		}
+
+		.lead .article-copy h3 {
+			font-size: clamp(2rem, 9vw, 3rem);
+		}
+
+		.article-footer {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+	}
+</style>
