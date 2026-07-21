@@ -1,0 +1,177 @@
+---
+import ArrowRight from "phosphor-astro/ArrowRight.astro";
+import GithubLogo from "phosphor-astro/GithubLogo.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { SITE_NAME } from "../../consts.js";
+import { getAuthorSchemas } from "../../lib/seo.js";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+export async function getStaticPaths() {
+	const authors = await getCollection("authors");
+	const posts = await getCollection("blog");
+	return authors
+		.map(author => ({ author, posts: posts.filter(post => post.data.authors.some(reference => reference.id === author.id)) }))
+		.filter(item => item.posts.length > 0)
+		.map(({ author, posts }) => ({ params: { slug: author.id }, props: { author, posts } }));
+}
+
+const { author, posts: unsortedPosts } = Astro.props;
+const posts = unsortedPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const jsonLd = getAuthorSchemas(Astro.site, author, posts);
+---
+
+<SiteLayout title={`${author.data.name}｜${SITE_NAME} 作者`} description={author.data.description} jsonLd={jsonLd} mainClass="author-page">
+	<section class="author-hero shell">
+		<nav class="breadcrumbs" aria-label="麵包屑導覽"><a href="/">首頁</a><span>/</span><a href="/authors/">作者</a><span>/</span><span aria-current="page">{author.data.name}</span></nav>
+		<div class="author-profile">
+			<img src={author.data.avatar} width="144" height="144" alt={`${author.data.name} 的頭像`} decoding="async" />
+			<div class="author-copy">
+				<p class="eyebrow">Contributor</p>
+				<h1>{author.data.name}</h1>
+				<p>{author.data.description}</p>
+				{
+					author.data.github && (
+						<a class="github-link" href={author.data.github} target="_blank" rel="me noreferrer">
+							<GithubLogo width={20} height={20} weight="bold" /> GitHub
+						</a>
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<section class="author-posts shell" aria-labelledby="author-posts-title">
+		<div class="section-heading"><div><p class="eyebrow">Articles</p><h2 id="author-posts-title">署名文章</h2></div><p>{posts.length} 篇</p></div>
+		<div class="post-rows">
+			{
+				posts.map(post => (
+					<a href={`/blog/${post.data.slug}/`}>
+						<div>
+							<>
+								<span>{post.data.category}</span>
+								<FormattedDate date={post.data.pubDate} />
+							</>
+						</div>
+						<h3>{post.data.title}</h3>
+						<ArrowRight width={22} height={22} weight="bold" aria-hidden="true" />
+					</a>
+				))
+			}
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.author-hero {
+		padding-block: 5rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.breadcrumbs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		margin-bottom: 4rem;
+		color: var(--muted);
+		font-size: 0.78rem;
+	}
+
+	.breadcrumbs a:hover {
+		color: var(--orange-soft);
+	}
+
+	.author-profile {
+		display: flex;
+		align-items: center;
+		gap: clamp(1.5rem, 4vw, 3rem);
+	}
+
+	.author-profile > img {
+		width: clamp(104px, 15vw, 144px);
+		max-width: 100%;
+		height: clamp(104px, 15vw, 144px);
+		flex: 0 0 auto;
+		border: 1px solid var(--line-strong);
+		border-radius: 50%;
+		background: var(--pine-950);
+		object-fit: cover;
+	}
+
+	.author-hero h1 {
+		margin-bottom: 1rem;
+		font-size: clamp(3.2rem, 7vw, 6.4rem);
+	}
+
+	.author-copy > p:not(.eyebrow) {
+		max-width: 680px;
+		color: var(--muted);
+	}
+
+	.github-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1.2rem;
+		color: var(--orange-soft);
+		font-size: 0.82rem;
+		font-weight: 800;
+	}
+
+	.author-posts {
+		padding-block: 5rem 8rem;
+	}
+
+	.post-rows {
+		border-top: 1px solid var(--line);
+	}
+
+	.post-rows > a {
+		display: grid;
+		grid-template-columns: 180px minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 2rem;
+		padding-block: 1.5rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.post-rows > a:hover h3,
+	.post-rows > a:hover > svg {
+		color: var(--orange-soft);
+	}
+
+	.post-rows > a > div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		color: var(--muted);
+		font-size: 0.72rem;
+	}
+
+	.post-rows > a > div span {
+		color: var(--orange-soft);
+		font-family: var(--font-mono);
+	}
+
+	.post-rows h3 {
+		margin: 0;
+		font-size: 1.3rem;
+	}
+
+	@media (max-width: 680px) {
+		.author-profile {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		.post-rows > a {
+			grid-template-columns: 1fr auto;
+			gap: 1rem;
+		}
+
+		.post-rows > a > div {
+			grid-column: 1 / -1;
+			flex-direction: row;
+		}
+	}
+</style>
