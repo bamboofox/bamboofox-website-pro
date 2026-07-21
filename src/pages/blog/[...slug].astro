@@ -1,0 +1,23 @@
+---
+import { getCollection, getEntries, render } from "astro:content";
+import { DEFAULT_SOCIAL_IMAGE } from "../../consts.js";
+import { getArticleSchemas } from "../../lib/seo.js";
+import BlogPost from "../../layouts/BlogPost.astro";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("blog");
+	return posts.map(post => ({
+		params: { slug: post.data.slug },
+		props: post
+	}));
+}
+const post = Astro.props;
+const { Content } = await render(post);
+const authors = await getEntries(post.data.authors);
+const image = post.data.image || DEFAULT_SOCIAL_IMAGE;
+const jsonLd = getArticleSchemas({ site: Astro.site, ...post.data, image: post.data.image, authors });
+---
+
+<BlogPost {...post.data} authors={authors} image={image} jsonLd={jsonLd}>
+	<Content />
+</BlogPost>

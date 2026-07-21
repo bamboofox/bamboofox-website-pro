@@ -1,0 +1,51 @@
+---
+import EnvelopeSimple from "phosphor-astro/EnvelopeSimple.astro";
+import DiscordLogo from "phosphor-astro/DiscordLogo.astro";
+import FacebookLogo from "phosphor-astro/FacebookLogo.astro";
+import InstagramLogo from "phosphor-astro/InstagramLogo.astro";
+import UsersThree from "phosphor-astro/UsersThree.astro";
+import { SOCIAL_LINKS } from "../consts.js";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="shell footer-main">
+		<div class="footer-identity">
+			<img src="/logo.svg" width="76" height="98" alt="" loading="lazy" />
+			<div>
+				<p class="eyebrow">BambooFox</p>
+				<h2>交大網路安全策進會</h2>
+				<p>透過資安課程、CTF 競賽與技術交流，持續累積實作經驗並推廣資訊安全。</p>
+			</div>
+		</div>
+
+		<div class="footer-links" aria-label="網站與社群連結">
+			<a href="/authors/">
+				<UsersThree width={21} height={21} aria-hidden="true" />
+				文章作者
+			</a>
+			<a href={SOCIAL_LINKS.discord} target="_blank" rel="noreferrer">
+				<DiscordLogo width={21} height={21} aria-hidden="true" />
+				Discord
+			</a>
+			<a href={SOCIAL_LINKS.instagram} target="_blank" rel="noreferrer">
+				<InstagramLogo width={21} height={21} aria-hidden="true" />
+				Instagram
+			</a>
+			<a href={SOCIAL_LINKS.facebook} target="_blank" rel="noreferrer">
+				<FacebookLogo width={21} height={21} aria-hidden="true" />
+				Facebook
+			</a>
+			<a href={SOCIAL_LINKS.email}>
+				<EnvelopeSimple width={21} height={21} aria-hidden="true" />
+				Email
+			</a>
+		</div>
+	</div>
+
+	<div class="shell footer-base">
+		<p>© {year} BambooFox</p>
+		<p>NYCU Cyber Security Club</p>
+	</div>
+</footer>

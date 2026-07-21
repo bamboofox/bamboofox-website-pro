@@ -1,0 +1,217 @@
+---
+import ArrowUpRight from "phosphor-astro/ArrowUpRight.astro";
+import CalendarPlus from "phosphor-astro/CalendarPlus.astro";
+import MapPin from "phosphor-astro/MapPin.astro";
+import { CALENDAR_URL } from "../consts.js";
+
+const { event } = Astro.props;
+const timeZone = event.timeZone || "Asia/Taipei";
+const month = new Intl.DateTimeFormat("en-US", { month: "short", timeZone }).format(event.start).toUpperCase();
+const day = new Intl.DateTimeFormat("en-US", { day: "2-digit", timeZone }).format(event.start);
+const weekday = new Intl.DateTimeFormat("zh-TW", { weekday: "long", timeZone }).format(event.start);
+const fullDate = new Intl.DateTimeFormat("zh-TW", {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+	timeZone
+}).format(event.start);
+const time = event.allDay
+	? "全天"
+	: `${new Intl.DateTimeFormat("zh-TW", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone }).format(event.start)}–${new Intl.DateTimeFormat("zh-TW", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone }).format(event.end)}`;
+---
+
+<article class="event-card">
+	<div class="event-date" aria-label={`${fullDate} ${weekday}`}>
+		<span>{month}</span>
+		<strong>{day}</strong>
+		<small>{weekday}</small>
+	</div>
+
+	<div class="event-copy">
+		<p class="event-kicker">UPCOMING EVENT <span aria-hidden="true">↗</span></p>
+		<h3>{event.title}</h3>
+		<div class="event-meta">
+			<p>
+				<CalendarPlus width={20} height={20} weight="bold" aria-hidden="true" />
+				<span>{fullDate}・{time}</span>
+			</p>
+			{
+				event.location && (
+					<p>
+						<MapPin width={20} height={20} weight="bold" aria-hidden="true" />
+						<span>{event.location}</span>
+					</p>
+				)
+			}
+		</div>
+		{event.description && <p class="event-description">{event.description}</p>}
+	</div>
+
+	<a class="event-action" href={CALENDAR_URL} target="_blank" rel="noreferrer">
+		<span>加到 Google Calendar</span>
+		<ArrowUpRight width={22} height={22} weight="bold" aria-hidden="true" />
+	</a>
+</article>
+
+<style>
+	.event-card {
+		display: grid;
+		grid-template-columns: 138px minmax(0, 1fr) auto;
+		align-items: stretch;
+		min-height: 270px;
+		overflow: hidden;
+		border: 2px solid var(--pine-950);
+		border-radius: var(--radius-md);
+		background: var(--mist-100);
+		color: var(--pine-950);
+	}
+
+	.event-date {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		padding: 1.5rem 1rem;
+		border-right: 2px solid var(--pine-950);
+		background: var(--orange);
+		font-family: var(--font-sans);
+		line-height: 1;
+	}
+
+	.event-date span {
+		font-size: 0.8rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+	}
+
+	.event-date strong {
+		margin-block: 0.55rem;
+		font-size: clamp(3.8rem, 8vw, 6.4rem);
+		letter-spacing: -0.08em;
+	}
+
+	.event-date small {
+		font-family: var(--font-zh);
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	.event-copy {
+		align-self: center;
+		padding: 2.2rem clamp(1.5rem, 4vw, 3.5rem);
+	}
+
+	.event-kicker {
+		margin-bottom: 0.8rem;
+		color: var(--pine-700);
+		font-family: var(--font-sans);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+	}
+
+	.event-copy h3 {
+		margin-bottom: 1.2rem;
+		font-size: clamp(2rem, 5vw, 4rem);
+	}
+
+	.event-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem 1.4rem;
+	}
+
+	.event-meta p {
+		display: flex;
+		max-width: 580px;
+		align-items: flex-start;
+		gap: 0.5rem;
+		margin: 0;
+		font-size: 0.94rem;
+		font-weight: 650;
+	}
+
+	.event-meta svg {
+		flex: 0 0 auto;
+		margin-top: 0.15rem;
+	}
+
+	.event-description {
+		max-width: 620px;
+		margin: 1rem 0 0;
+		color: var(--pine-700);
+	}
+
+	.event-action {
+		display: flex;
+		width: 96px;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		gap: 1.25rem;
+		padding: 1.25rem;
+		border-left: 2px solid var(--pine-950);
+		background: var(--moss-200);
+		text-align: center;
+		transition: background-color 180ms ease;
+	}
+
+	.event-action span {
+		font-size: 0.76rem;
+		font-weight: 800;
+		line-height: 1.45;
+		writing-mode: vertical-rl;
+	}
+
+	.event-action:hover {
+		background: var(--orange-soft);
+	}
+
+	@media (max-width: 760px) {
+		.event-card {
+			grid-template-columns: 100px 1fr;
+			min-height: 0;
+		}
+
+		.event-date {
+			padding-inline: 0.65rem;
+		}
+
+		.event-date strong {
+			font-size: 4rem;
+		}
+
+		.event-copy {
+			padding: 1.5rem 1.15rem;
+		}
+
+		.event-action {
+			width: auto;
+			min-height: 58px;
+			grid-column: 1 / -1;
+			flex-direction: row;
+			gap: 0.65rem;
+			border-top: 2px solid var(--pine-950);
+			border-left: 0;
+		}
+
+		.event-action span {
+			writing-mode: horizontal-tb;
+		}
+	}
+
+	@media (max-width: 460px) {
+		.event-card {
+			grid-template-columns: 80px 1fr;
+		}
+
+		.event-date strong {
+			font-size: 3.2rem;
+		}
+
+		.event-date span,
+		.event-date small {
+			font-size: 0.68rem;
+		}
+	}
+</style>

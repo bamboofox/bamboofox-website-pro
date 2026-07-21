@@ -1,0 +1,64 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+
+const {
+	title,
+	description,
+	image,
+	imageAlt,
+	type = "website",
+	mainClass = "",
+	lang = "zh-Hant-TW",
+	locale = "zh_TW",
+	canonical,
+	noindex,
+	authors,
+	publishedTime,
+	modifiedTime,
+	tags,
+	section,
+	jsonLd
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<BaseHead
+			title={title}
+			description={description}
+			image={image}
+			imageAlt={imageAlt}
+			type={type}
+			locale={locale}
+			canonical={canonical}
+			noindex={noindex}
+			authors={authors}
+			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
+			tags={tags}
+			section={section}
+			jsonLd={jsonLd}
+		/>
+	</head>
+	<body>
+		<a class="skip-link" href="#main-content">跳到主要內容</a>
+		<div class="site-atmosphere" aria-hidden="true">
+			<span class="mist mist-one"></span>
+			<span class="mist mist-two"></span>
+			<svg class="ridge ridge-one" viewBox="0 0 1440 320" preserveAspectRatio="none">
+				<path d="M0 258C150 188 270 194 391 230C555 280 654 98 839 158C1014 216 1084 92 1247 93C1321 93 1380 121 1440 156V320H0Z"></path>
+			</svg>
+			<svg class="ridge ridge-two" viewBox="0 0 1440 280" preserveAspectRatio="none">
+				<path d="M0 153C119 104 255 143 374 185C531 240 688 189 811 128C984 43 1151 71 1269 122C1343 154 1390 164 1440 147V280H0Z"></path>
+			</svg>
+		</div>
+		<Header />
+		<main id="main-content" class={mainClass}>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

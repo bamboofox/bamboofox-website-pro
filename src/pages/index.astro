@@ -1,0 +1,913 @@
+---
+import ArrowRight from "phosphor-astro/ArrowRight.astro";
+import ArrowUpRight from "phosphor-astro/ArrowUpRight.astro";
+import BookOpenText from "phosphor-astro/BookOpenText.astro";
+import DiscordLogo from "phosphor-astro/DiscordLogo.astro";
+import FacebookLogo from "phosphor-astro/FacebookLogo.astro";
+import FlagCheckered from "phosphor-astro/FlagCheckered.astro";
+import InstagramLogo from "phosphor-astro/InstagramLogo.astro";
+import ShieldCheck from "phosphor-astro/ShieldCheck.astro";
+import UsersThree from "phosphor-astro/UsersThree.astro";
+import { getCollection } from "astro:content";
+import EventCard from "../components/EventCard.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import PostCover from "../components/PostCover.astro";
+import { CALENDAR_URL, SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from "../consts.js";
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getUpcomingEvents } from "../lib/calendar.js";
+import { getOrganizationSchema, getWebsiteSchema } from "../lib/seo.js";
+
+const { events, status: calendarStatus } = await getUpcomingEvents({ limit: 3 });
+const latestPosts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)];
+---
+
+<SiteLayout title={SITE_TITLE} description={SITE_DESCRIPTION} jsonLd={jsonLd} mainClass="home-page">
+	<section class="hero shell" aria-labelledby="hero-title">
+		<div class="hero-copy">
+			<p class="hero-label"><span></span> NYCU CYBER SECURITY CLUB</p>
+			<h1 id="hero-title"><span>以實作建立</span><br />資安能力。</h1>
+			<p class="hero-lead">交大網路安全策進會（NYCU Cyber Security Club）BambooFox 成立於 2014 年，透過資安課程、CTF 競賽與技術交流，培養資訊安全的分析與實作能力。</p>
+			<div class="hero-actions">
+				<a class="button" href="#events">
+					查看近期活動
+					<ArrowRight width={19} height={19} weight="bold" aria-hidden="true" />
+				</a>
+				<a class="button secondary" href="#about">
+					認識 BambooFox
+					<ArrowRight width={19} height={19} weight="bold" aria-hidden="true" />
+				</a>
+			</div>
+			<div class="hero-facts" aria-label="社群摘要">
+				<div><strong>2014</strong><span>成立年份</span></div>
+				<div><strong>CTF</strong><span>競賽與實戰</span></div>
+				<div><strong>OPEN</strong><span>跨校技術交流</span></div>
+			</div>
+		</div>
+
+		<div class="hero-visual" aria-label="BambooFox 竹子與搖尾巴狐狸動畫">
+			<div class="visual-disc" aria-hidden="true"></div>
+			<img class="hero-bamboo" src="/bamboo.svg" width="1330" height="1724" alt="" />
+			<img class="hero-fox" src="/fox-wag.svg" width="1148" height="1574" alt="" />
+			<p class="visual-note">NYCU<br />CYBER SECURITY<br />CLUB</p>
+		</div>
+	</section>
+
+	<section id="events" class="events-section">
+		<div class="shell">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Upcoming events</p>
+					<h2>近期活動</h2>
+				</div>
+				<p>活動資料同步自 BambooFox 公開 Google Calendar，時間以 Asia/Taipei 顯示。</p>
+			</div>
+
+			<div class="event-list">
+				{events.map(event => <EventCard event={event} />)}
+			</div>
+
+			{
+				events.length === 0 && (
+					<div class="events-empty">
+						<p>{calendarStatus === "unavailable" ? "目前無法讀取活動資料，請至 Google Calendar 查看完整行程。" : "目前沒有公開的近期活動。"}</p>
+						<a class="text-link" href={CALENDAR_URL} target="_blank" rel="noreferrer">
+							查看活動日曆 <ArrowUpRight width={18} height={18} weight="bold" />
+						</a>
+					</div>
+				)
+			}
+		</div>
+	</section>
+
+	<section class="activities-section shell" aria-labelledby="activities-title">
+		<div class="section-heading">
+			<div>
+				<p class="eyebrow">Activities</p>
+				<h2 id="activities-title">課程、競賽與技術分享</h2>
+			</div>
+			<p>課程從基礎觀念與工具操作開始，延伸至漏洞分析、CTF 解題與團隊實作。</p>
+		</div>
+
+		<div class="activity-list">
+			<article class="activity-card">
+				<div class="card-number">01</div>
+				<BookOpenText width={38} height={38} weight="duotone" aria-hidden="true" />
+				<h3>系列課程</h3>
+				<p>涵蓋 Web Security、Reverse、Pwn 與其他資安領域，搭配示範與實作練習。</p>
+				<span>COURSES</span>
+			</article>
+
+			<article class="activity-card ctf-card">
+				<div class="card-number">02</div>
+				<FlagCheckered width={38} height={38} weight="duotone" aria-hidden="true" />
+				<h3>CTF 競賽</h3>
+				<p>組隊參與 CTF 競賽，訓練漏洞分析、工具運用、解題分工與限時協作。</p>
+				<span>COMPETITION</span>
+			</article>
+
+			<article class="activity-card">
+				<div class="card-number">03</div>
+				<UsersThree width={38} height={38} weight="duotone" aria-hidden="true" />
+				<h3>技術交流</h3>
+				<p>透過社課、文章與 Write-up 分享分析方法、實作過程與研究成果。</p>
+				<span>KNOWLEDGE SHARING</span>
+			</article>
+		</div>
+	</section>
+
+	<section id="about" class="about-section">
+		<div class="shell">
+			<div class="about-layout">
+				<div class="about-copy">
+					<p class="eyebrow">NYCU Cyber Security Club</p>
+					<h2>交大網路安全策進會</h2>
+					<p>交大網路安全策進會成立於 2014 年，BambooFox 為社群品牌。社團早期結合交大 DSNSLab、SQLab、資工系計中與臺灣駭客協會的資源，並以 CTF 競賽、資安研究與實務訓練為主要方向。</p>
+					<p>BambooFox 社群成員來自交大、清大、中央、中原、台科大等學校，持續參與國內外 CTF 競賽、資安社群活動與資訊安全推廣。</p>
+				</div>
+
+				<aside class="about-stat" aria-label="BambooFox 成立資訊">
+					<span>ESTABLISHED</span>
+					<strong>2014</strong>
+					<p>National Yang Ming Chiao Tung University</p>
+				</aside>
+			</div>
+
+			<div class="about-pillars">
+				<article>
+					<UsersThree width={30} height={30} weight="duotone" aria-hidden="true" />
+					<h3>跨校社群</h3>
+					<p>串聯不同學校與技術領域的成員，共同參與課程、研究與競賽。</p>
+				</article>
+				<article>
+					<ShieldCheck width={30} height={30} weight="duotone" aria-hidden="true" />
+					<h3>實作導向</h3>
+					<p>從工具操作、漏洞分析到 CTF 解題，強調可驗證的實作成果。</p>
+				</article>
+				<article>
+					<BookOpenText width={30} height={30} weight="duotone" aria-hidden="true" />
+					<h3>知識分享</h3>
+					<p>公開教學、技術文章與 Write-up，保存可查證、可重現的技術內容。</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<section class="topics-section">
+		<div class="shell">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Learning topics</p>
+					<h2>課程與學習主題</h2>
+				</div>
+				<p>課程內容會依學期與講者調整，從入門觀念延伸到實際漏洞分析與競賽應用。</p>
+			</div>
+
+			<div class="topic-list">
+				<article><span>01</span><h3>Web Security</h3><p>HTTP、瀏覽器與伺服器行為、輸入驗證、權限控制與常見 Web 漏洞。</p></article>
+				<article><span>02</span><h3>Reverse</h3><p>組合語言、除錯與反編譯工具，分析程式邏輯與執行行為。</p></article>
+				<article><span>03</span><h3>Pwn</h3><p>記憶體安全、程式執行流程、漏洞成因與利用技術。</p></article>
+				<article><span>04</span><h3>More topics</h3><p>密碼學、數位鑑識、雲端安全，以及社群成員關注的其他資安主題。</p></article>
+			</div>
+		</div>
+	</section>
+
+	<section class="journal-section shell" aria-labelledby="journal-title">
+		<div class="section-heading">
+			<div>
+				<p class="eyebrow">Latest posts</p>
+				<h2 id="journal-title">最新文章</h2>
+			</div>
+			<a class="text-link" href="/blog/">
+				查看全部文章 <ArrowRight width={18} height={18} weight="bold" aria-hidden="true" />
+			</a>
+		</div>
+
+		<div class="post-list">
+			{
+				latestPosts.map((post, index) => (
+					<article class:list={["post-card", { featured: index === 0 }]}>
+						<a href={`/blog/${post.data.slug}/`} aria-label={`閱讀：${post.data.title}`}>
+							<PostCover tone={post.data.coverTone} category={post.data.category} title={post.data.title} large={index === 0} />
+							<div class="post-card-copy">
+								<div class="post-meta">
+									<span>{post.data.category}</span>
+									<FormattedDate date={post.data.pubDate} />
+								</div>
+								<h3>{post.data.title}</h3>
+								<p>{post.data.description}</p>
+								<span class="read-more">
+									閱讀文章 <ArrowRight width={17} height={17} weight="bold" />
+								</span>
+							</div>
+						</a>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<section id="community" class="community-section shell" aria-labelledby="community-title">
+		<div class="community-heading">
+			<p class="eyebrow">Community</p>
+			<h2 id="community-title">加入 BambooFox 社群</h2>
+			<p>Discord 提供技術討論與即時交流；Instagram 與 Facebook 會發布近期活動、課程與社群消息。</p>
+		</div>
+
+		<div class="social-grid">
+			<a href={SOCIAL_LINKS.discord} target="_blank" rel="noreferrer">
+				<DiscordLogo width={30} height={30} weight="fill" aria-hidden="true" />
+				<span><strong>Discord</strong><small>技術討論與即時交流</small></span>
+				<ArrowUpRight width={22} height={22} weight="bold" aria-hidden="true" />
+			</a>
+			<a href={SOCIAL_LINKS.instagram} target="_blank" rel="noreferrer">
+				<InstagramLogo width={30} height={30} weight="bold" aria-hidden="true" />
+				<span><strong>Instagram</strong><small>@nycu.bamboofox</small></span>
+				<ArrowUpRight width={22} height={22} weight="bold" aria-hidden="true" />
+			</a>
+			<a href={SOCIAL_LINKS.facebook} target="_blank" rel="noreferrer">
+				<FacebookLogo width={30} height={30} weight="bold" aria-hidden="true" />
+				<span><strong>Facebook</strong><small>BambooFox</small></span>
+				<ArrowUpRight width={22} height={22} weight="bold" aria-hidden="true" />
+			</a>
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.hero {
+		display: grid;
+		min-height: calc(100svh - 78px);
+		grid-template-columns: minmax(0, 1.12fr) minmax(380px, 0.88fr);
+		align-items: center;
+		gap: clamp(2rem, 6vw, 6.5rem);
+		padding-block: 5.5rem 7rem;
+	}
+
+	.hero-copy {
+		position: relative;
+		z-index: 2;
+	}
+
+	.hero-label {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin-bottom: 1.5rem;
+		color: var(--fern-300);
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+	}
+
+	.hero-label span {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--orange);
+	}
+
+	.hero h1 {
+		max-width: 760px;
+		margin-bottom: 1.6rem;
+		color: var(--white);
+		font-size: clamp(3.4rem, 6.4vw, 6.6rem);
+		line-height: 0.98;
+		letter-spacing: -0.065em;
+	}
+
+	.hero h1 span {
+		color: var(--orange);
+	}
+
+	.hero-lead {
+		max-width: 650px;
+		margin-bottom: 2rem;
+		color: #c3d8cb;
+		font-size: clamp(1rem, 1.5vw, 1.18rem);
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+	}
+
+	.hero-facts {
+		display: flex;
+		max-width: 680px;
+		margin-top: 3.2rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.hero-facts div {
+		display: flex;
+		min-width: 0;
+		flex: 1;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	.hero-facts div + div {
+		padding-left: 1.25rem;
+		border-left: 1px solid var(--line);
+	}
+
+	.hero-facts strong {
+		color: var(--mist-100);
+		font-family: var(--font-mono);
+		font-size: 1.08rem;
+	}
+
+	.hero-facts span {
+		color: var(--muted);
+		font-size: 0.75rem;
+	}
+
+	.hero-visual {
+		position: relative;
+		min-height: 610px;
+		overflow: hidden;
+		border: 1px solid var(--line-strong);
+		border-radius: 48% 48% var(--radius-lg) var(--radius-lg) / 30% 30% var(--radius-lg) var(--radius-lg);
+		background: linear-gradient(180deg, #d9ed9b 0%, #8bc56f 58%, #176247 58%, #0b3c2e 100%);
+		isolation: isolate;
+	}
+
+	.hero-visual::after {
+		position: absolute;
+		right: -20%;
+		bottom: -11%;
+		left: -20%;
+		z-index: 2;
+		height: 40%;
+		border-radius: 50% 50% 0 0;
+		background: var(--pine-800);
+		content: "";
+	}
+
+	.visual-disc {
+		position: absolute;
+		top: 10%;
+		right: 10%;
+		z-index: 1;
+		width: 96px;
+		aspect-ratio: 1;
+		border: 2px solid var(--pine-950);
+		border-radius: 50%;
+		background: var(--orange-soft);
+	}
+
+	.hero-bamboo,
+	.hero-fox {
+		position: absolute;
+		object-fit: contain;
+		object-position: bottom;
+	}
+
+	.hero-bamboo {
+		bottom: -3%;
+		left: -7%;
+		z-index: 3;
+		width: 79%;
+		height: 94%;
+	}
+
+	.hero-fox {
+		right: -2%;
+		bottom: -2%;
+		z-index: 4;
+		width: 76%;
+		height: 82%;
+	}
+
+	.visual-note {
+		position: absolute;
+		right: 1.6rem;
+		bottom: 1.5rem;
+		z-index: 6;
+		margin: 0;
+		color: var(--moss-200);
+		font-family: var(--font-mono);
+		font-size: 0.58rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		line-height: 1.5;
+		text-align: right;
+	}
+
+	.events-section {
+		padding-block: 7rem;
+		background: var(--moss-200);
+		color: var(--pine-950);
+	}
+
+	.events-section .eyebrow,
+	.events-section .section-heading > p {
+		color: var(--pine-700);
+	}
+
+	.event-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.events-empty {
+		padding: 2rem;
+		border: 2px solid var(--pine-950);
+		border-radius: var(--radius-md);
+		background: var(--mist-100);
+	}
+
+	.events-empty p {
+		margin-bottom: 0.75rem;
+	}
+
+	.events-empty .text-link {
+		color: var(--pine-700);
+	}
+
+	.activities-section,
+	.journal-section {
+		padding-block: 8rem;
+	}
+
+	.activity-list {
+		display: grid;
+		grid-template-columns: 1.08fr 0.92fr 1.08fr;
+		gap: 1rem;
+	}
+
+	.activity-card {
+		position: relative;
+		min-height: 380px;
+		padding: 2rem;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-md);
+		background: rgba(4, 31, 24, 0.38);
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease;
+	}
+
+	.activity-card:hover {
+		transform: translateY(-5px);
+		border-color: var(--orange-soft);
+	}
+
+	.activity-card > svg {
+		margin-top: 4.6rem;
+		color: var(--orange-soft);
+	}
+
+	.activity-card h3 {
+		margin: 1.25rem 0 0.8rem;
+		font-size: 2rem;
+	}
+
+	.activity-card p {
+		max-width: 310px;
+		color: var(--muted);
+	}
+
+	.activity-card > span {
+		position: absolute;
+		bottom: 1.6rem;
+		left: 2rem;
+		color: rgba(168, 198, 183, 0.55);
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+	}
+
+	.card-number {
+		position: absolute;
+		top: 1.4rem;
+		right: 1.6rem;
+		color: rgba(238, 243, 216, 0.38);
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 800;
+	}
+
+	.ctf-card {
+		margin-top: 3rem;
+		background: var(--orange);
+		color: var(--pine-950);
+	}
+
+	.ctf-card > svg,
+	.ctf-card p,
+	.ctf-card > span,
+	.ctf-card .card-number {
+		color: var(--pine-950);
+	}
+
+	.about-section {
+		padding-block: 8rem;
+		background: var(--paper);
+		color: var(--pine-950);
+	}
+
+	.about-layout {
+		display: grid;
+		grid-template-columns: 1.25fr 0.75fr;
+		align-items: stretch;
+		gap: clamp(2rem, 7vw, 7rem);
+	}
+
+	.about-copy .eyebrow {
+		color: var(--pine-700);
+	}
+
+	.about-copy h2 {
+		max-width: 760px;
+		margin-bottom: 2rem;
+		font-size: clamp(2.8rem, 6vw, 5.5rem);
+	}
+
+	.about-copy > p:not(.eyebrow) {
+		max-width: 780px;
+		color: #36594b;
+		font-size: 1.05rem;
+		line-height: 1.9;
+	}
+
+	.about-stat {
+		display: flex;
+		min-height: 380px;
+		justify-content: space-between;
+		flex-direction: column;
+		padding: 2rem;
+		border: 2px solid var(--pine-950);
+		border-radius: var(--radius-md);
+		background: var(--orange);
+	}
+
+	.about-stat span,
+	.about-stat p {
+		font-family: var(--font-mono);
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.about-stat strong {
+		font-family: var(--font-mono);
+		font-size: clamp(5rem, 10vw, 9rem);
+		letter-spacing: -0.1em;
+		line-height: 0.8;
+	}
+
+	.about-stat p {
+		max-width: 220px;
+		margin: 0;
+	}
+
+	.about-pillars {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		margin-top: 4rem;
+		border-block: 1px solid rgba(8, 47, 36, 0.3);
+	}
+
+	.about-pillars article {
+		padding: 2rem;
+	}
+
+	.about-pillars article + article {
+		border-left: 1px solid rgba(8, 47, 36, 0.3);
+	}
+
+	.about-pillars svg {
+		margin-bottom: 1.5rem;
+		color: var(--pine-700);
+	}
+
+	.about-pillars h3 {
+		margin-bottom: 0.6rem;
+		font-size: 1.5rem;
+	}
+
+	.about-pillars p {
+		margin: 0;
+		color: #456557;
+	}
+
+	.topics-section {
+		padding-block: 8rem;
+		background: var(--pine-950);
+	}
+
+	.topic-list {
+		border-top: 1px solid var(--line-strong);
+	}
+
+	.topic-list article {
+		display: grid;
+		grid-template-columns: 72px 0.8fr 1.2fr;
+		align-items: center;
+		gap: 2rem;
+		padding-block: 2rem;
+		border-bottom: 1px solid var(--line-strong);
+		transition:
+			padding-inline 180ms ease,
+			background-color 180ms ease;
+	}
+
+	.topic-list article:hover {
+		padding-inline: 1.2rem;
+		background: rgba(217, 237, 155, 0.06);
+	}
+
+	.topic-list span {
+		color: var(--orange);
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 800;
+	}
+
+	.topic-list h3 {
+		margin: 0;
+		font-size: clamp(1.5rem, 3vw, 2.5rem);
+	}
+
+	.topic-list p {
+		max-width: 560px;
+		margin: 0;
+		color: var(--muted);
+	}
+
+	.post-list {
+		display: grid;
+		grid-template-columns: 1.2fr 0.8fr;
+		gap: 1.25rem;
+	}
+
+	.post-card:nth-child(3) {
+		grid-column: 2;
+	}
+
+	.post-card.featured {
+		grid-row: span 2;
+	}
+
+	.post-card a {
+		display: block;
+	}
+
+	.post-card-copy {
+		padding: 1.35rem 0.2rem 0.8rem;
+	}
+
+	.post-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.65rem;
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		font-weight: 700;
+	}
+
+	.post-meta span {
+		padding: 0.25rem 0.55rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		color: var(--orange-soft);
+	}
+
+	.post-card h3 {
+		margin-bottom: 0.55rem;
+		font-size: clamp(1.35rem, 2.7vw, 2.25rem);
+		transition: color 180ms ease;
+	}
+
+	.post-card a:hover h3 {
+		color: var(--orange-soft);
+	}
+
+	.post-card p {
+		max-width: 590px;
+		margin-bottom: 0.7rem;
+		color: var(--muted);
+		font-size: 0.92rem;
+	}
+
+	.read-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		color: var(--orange-soft);
+		font-size: 0.8rem;
+		font-weight: 800;
+	}
+
+	.community-section {
+		margin-bottom: 8rem;
+		padding: clamp(2rem, 5vw, 4.5rem);
+		border: 2px solid var(--pine-950);
+		border-radius: var(--radius-lg);
+		background: var(--orange);
+		color: var(--pine-950);
+	}
+
+	.community-heading {
+		display: grid;
+		grid-template-columns: 1fr 0.8fr;
+		align-items: end;
+		gap: 3rem;
+		margin-bottom: 3rem;
+	}
+
+	.community-heading .eyebrow {
+		grid-column: 1 / -1;
+		margin-bottom: -1rem;
+		color: var(--pine-700);
+	}
+
+	.community-heading h2 {
+		margin: 0;
+		font-size: clamp(2.7rem, 6vw, 5.2rem);
+	}
+
+	.community-heading > p:last-child {
+		margin: 0 0 0.5rem;
+		color: #304f3d;
+	}
+
+	.social-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.8rem;
+	}
+
+	.social-grid a {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 0.9rem;
+		padding: 1.25rem;
+		border: 2px solid var(--pine-950);
+		border-radius: var(--radius-sm);
+		background: var(--mist-100);
+		transition:
+			transform 180ms ease,
+			background-color 180ms ease;
+	}
+
+	.social-grid a:hover {
+		transform: translateY(-4px);
+		background: var(--moss-200);
+	}
+
+	.social-grid span {
+		display: flex;
+		min-width: 0;
+		flex-direction: column;
+		line-height: 1.3;
+	}
+
+	.social-grid strong {
+		font-size: 1.05rem;
+	}
+
+	.social-grid small {
+		margin-top: 0.2rem;
+		color: #456557;
+		font-size: 0.7rem;
+	}
+
+	@media (max-width: 1000px) {
+		.hero {
+			min-height: auto;
+			grid-template-columns: 1fr;
+			padding-top: 5rem;
+		}
+
+		.hero-copy {
+			max-width: 800px;
+		}
+
+		.hero-visual {
+			width: min(100%, 640px);
+			min-height: 570px;
+			justify-self: center;
+		}
+
+		.activity-list {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.ctf-card {
+			margin-top: 0;
+		}
+
+		.activity-card:last-child {
+			grid-column: span 2;
+			min-height: 310px;
+		}
+
+		.about-layout {
+			grid-template-columns: 1fr;
+		}
+
+		.about-stat {
+			min-height: 300px;
+		}
+
+		.social-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.hero {
+			padding-block: 3.6rem 5rem;
+		}
+
+		.hero h1 {
+			font-size: clamp(3rem, 14vw, 4.8rem);
+		}
+
+		.hero-facts span {
+			font-size: 0.66rem;
+		}
+
+		.hero-visual {
+			min-height: 480px;
+			border-radius: 42% 42% 28px 28px / 24% 24% 28px 28px;
+		}
+
+		.events-section,
+		.activities-section,
+		.about-section,
+		.topics-section,
+		.journal-section {
+			padding-block: 5rem;
+		}
+
+		.activity-list,
+		.post-list,
+		.about-pillars,
+		.community-heading {
+			grid-template-columns: 1fr;
+		}
+
+		.activity-card:last-child,
+		.post-card:nth-child(3) {
+			grid-column: auto;
+		}
+
+		.activity-card {
+			min-height: 330px;
+		}
+
+		.post-card.featured {
+			grid-row: auto;
+		}
+
+		.about-pillars article + article {
+			border-top: 1px solid rgba(8, 47, 36, 0.3);
+			border-left: 0;
+		}
+
+		.topic-list article {
+			grid-template-columns: 42px 1fr;
+			gap: 0.5rem 1rem;
+		}
+
+		.topic-list p {
+			grid-column: 2;
+		}
+
+		.community-section {
+			margin-bottom: 5rem;
+		}
+
+		.community-heading .eyebrow {
+			grid-column: auto;
+			margin-bottom: 0;
+		}
+	}
+
+	@media (max-width: 440px) {
+		.hero-actions .button {
+			width: 100%;
+		}
+
+		.hero-facts div + div {
+			padding-left: 0.75rem;
+		}
+
+		.hero-visual {
+			min-height: 420px;
+		}
+	}
+</style>

@@ -1,0 +1,24 @@
+{
+	"name": "BambooFox｜NYCU Cyber Security Club",
+	"short_name": "BambooFox",
+	"description": "交大網路安全策進會（NYCU Cyber Security Club）官方網站。",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#082f24",
+	"theme_color": "#082f24",
+	"lang": "zh-Hant-TW",
+	"icons": [
+		{
+			"src": "/brand/logo-square.webp",
+			"sizes": "512x512",
+			"type": "image/webp",
+			"purpose": "any"
+		},
+		{
+			"src": "/brand/logo-maskable.webp",
+			"sizes": "512x512",
+			"type": "image/webp",
+			"purpose": "maskable"
+		}
+	]
+}

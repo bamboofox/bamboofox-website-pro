@@ -1,0 +1,14 @@
+---
+const { date, includeYear = true } = Astro.props;
+---
+
+<time datetime={date.toISOString()}>
+	{
+		date.toLocaleDateString("zh-TW", {
+			year: includeYear ? "numeric" : undefined,
+			month: "long",
+			day: "numeric",
+			timeZone: "Asia/Taipei"
+		})
+	}
+</time>

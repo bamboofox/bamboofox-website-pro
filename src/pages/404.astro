@@ -1,0 +1,64 @@
+---
+import ArrowLeft from "phosphor-astro/ArrowLeft.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout title="找不到頁面｜BambooFox" description="找不到你要查看的 BambooFox 頁面。" noindex={true} mainClass="not-found-page">
+	<section class="not-found shell">
+		<div>
+			<p class="eyebrow">Error 404</p>
+			<h1>找不到這個頁面</h1>
+			<p>網址可能已變更或內容已移除。你可以返回首頁，或前往 Blog 查看資安文章、教學與 CTF Write-up。</p>
+			<div class="actions">
+				<a class="button" href="/"><ArrowLeft width={18} height={18} weight="bold" aria-hidden="true" />返回首頁</a>
+				<a class="button secondary" href="/blog/">前往 Blog</a>
+			</div>
+		</div>
+		<img src="/fox-wag.svg" width="280" height="384" alt="" />
+	</section>
+</SiteLayout>
+
+<style>
+	.not-found {
+		display: grid;
+		min-height: 70svh;
+		grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
+		align-items: center;
+		gap: 4rem;
+		padding-block: 6rem;
+	}
+
+	.not-found h1 {
+		max-width: 780px;
+		margin-bottom: 1.2rem;
+		font-size: clamp(3.5rem, 7vw, 6.8rem);
+	}
+
+	.not-found > div > p:last-of-type {
+		max-width: 650px;
+		color: var(--muted);
+	}
+
+	.not-found img {
+		width: min(100%, 300px);
+		justify-self: center;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		margin-top: 2rem;
+	}
+
+	@media (max-width: 700px) {
+		.not-found {
+			grid-template-columns: 1fr;
+		}
+
+		.not-found img {
+			order: -1;
+			width: 180px;
+		}
+	}
+</style>

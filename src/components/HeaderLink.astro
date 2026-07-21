@@ -1,0 +1,13 @@
+---
+const { href, class: className, ...props } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const rawPathname = Astro.url.pathname;
+const pathname = rawPathname.startsWith(base) ? `/${rawPathname.slice(base.length)}` : rawPathname;
+const normalizePath = value => value.replace(/\/+$/, "") || "/";
+const firstSegment = pathname.match(/[^/]+/g)?.[0];
+const isActive = normalizePath(href) === normalizePath(pathname) || normalizePath(href) === `/${firstSegment || ""}`;
+---
+
+<a href={href} class:list={[className, "nav-link", { active: isActive }]} aria-current={isActive ? "page" : undefined} {...props}>
+	<slot />
+</a>

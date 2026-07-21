@@ -1,0 +1,26 @@
+---
+import ArrowUpRight from "phosphor-astro/ArrowUpRight.astro";
+import HeaderLink from "./HeaderLink.astro";
+---
+
+<header class="site-header">
+	<nav class="shell nav-shell" aria-label="主要導覽">
+		<a class="brand" href="/" aria-label="BambooFox 首頁">
+			<img src="/logo.svg" alt="" width="34" height="44" />
+			<span class="brand-copy">
+				<strong>BambooFox</strong>
+				<small>交大網路安全策進會</small>
+			</span>
+		</a>
+
+		<div class="internal-links">
+			<HeaderLink href="/">首頁</HeaderLink>
+			<HeaderLink href="/blog/">Blog</HeaderLink>
+		</div>
+
+		<a class="join-link" href="/#community">
+			加入社群
+			<ArrowUpRight width={17} height={17} weight="bold" aria-hidden="true" />
+		</a>
+	</nav>
+</header>
