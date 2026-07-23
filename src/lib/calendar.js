@@ -1,6 +1,7 @@
 import { CALENDAR_FEED_URL } from "../consts.js";
 
 const TIME_ZONE = "Asia/Taipei";
+const GOOGLE_CALENDAR_EVENT_URL = "https://calendar.google.com/calendar/render";
 
 function decodeCalendarText(value = "") {
 	return value.replace(/\\n/gi, "\n").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\");
@@ -58,6 +59,37 @@ export function parseCalendar(icalText) {
 			};
 		})
 		.filter(Boolean);
+}
+
+function formatGoogleCalendarDate(date, allDay) {
+	const value = new Date(date);
+
+	if (allDay) return value.toISOString().slice(0, 10).replaceAll("-", "");
+
+	return value
+		.toISOString()
+		.replace(/[-:]/g, "")
+		.replace(/\.\d{3}Z$/, "Z");
+}
+
+export function getGoogleCalendarEventUrl(event) {
+	const start = new Date(event.start);
+	let end = new Date(event.end || event.start);
+
+	if (event.allDay && end <= start) {
+		end = new Date(start.valueOf() + 24 * 60 * 60 * 1000);
+	}
+
+	const url = new URL(GOOGLE_CALENDAR_EVENT_URL);
+	url.searchParams.set("action", "TEMPLATE");
+	url.searchParams.set("text", event.title);
+	url.searchParams.set("dates", `${formatGoogleCalendarDate(start, event.allDay)}/${formatGoogleCalendarDate(end, event.allDay)}`);
+	url.searchParams.set("ctz", event.timeZone || TIME_ZONE);
+
+	if (event.description) url.searchParams.set("details", event.description);
+	if (event.location) url.searchParams.set("location", event.location);
+
+	return url.toString();
 }
 
 export async function getUpcomingEvents({ limit = 3 } = {}) {

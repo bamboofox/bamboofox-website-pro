@@ -2,9 +2,10 @@
 import ArrowUpRight from "phosphor-astro/ArrowUpRight.astro";
 import CalendarPlus from "phosphor-astro/CalendarPlus.astro";
 import MapPin from "phosphor-astro/MapPin.astro";
-import { CALENDAR_URL } from "../consts.js";
+import { getGoogleCalendarEventUrl } from "../lib/calendar.js";
 
 const { event } = Astro.props;
+const googleCalendarUrl = getGoogleCalendarEventUrl(event);
 const timeZone = event.timeZone || "Asia/Taipei";
 const month = new Intl.DateTimeFormat("en-US", { month: "short", timeZone }).format(event.start).toUpperCase();
 const day = new Intl.DateTimeFormat("en-US", { day: "2-digit", timeZone }).format(event.start);
@@ -47,7 +48,7 @@ const time = event.allDay
 		{event.description && <p class="event-description">{event.description}</p>}
 	</div>
 
-	<a class="event-action" href={CALENDAR_URL} target="_blank" rel="noreferrer">
+	<a class="event-action" href={googleCalendarUrl} target="_blank" rel="noreferrer" aria-label={`將「${event.title}」加到 Google Calendar`}>
 		<span>加到 Google Calendar</span>
 		<ArrowUpRight width={22} height={22} weight="bold" aria-hidden="true" />
 	</a>

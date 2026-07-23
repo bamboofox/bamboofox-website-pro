@@ -10,10 +10,11 @@ import PawPrint from "phosphor-astro/PawPrint.astro";
 import Student from "phosphor-astro/Student.astro";
 import UsersThree from "phosphor-astro/UsersThree.astro";
 import { getCollection } from "astro:content";
+import CalendarSubscribeActions from "../components/CalendarSubscribeActions.astro";
 import EventCard from "../components/EventCard.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import PostCover from "../components/PostCover.astro";
-import { CALENDAR_URL, CTF_TEAMS, SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from "../consts.js";
+import { CALENDAR_SUBSCRIBE_URL, CTF_TEAMS, SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from "../consts.js";
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getUpcomingEvents } from "../lib/calendar.js";
 import { getOrganizationSchema, getWebsiteSchema } from "../lib/seo.js";
@@ -61,7 +62,10 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 					<p class="eyebrow">Upcoming events</p>
 					<h2>近期活動</h2>
 				</div>
-				<p>活動資料同步自 BambooFox 公開 Google Calendar，時間以 Asia/Taipei 顯示。</p>
+				<div class="events-heading-actions">
+					<CalendarSubscribeActions />
+					<p>活動同步自公開 Google Calendar，時間以 Asia/Taipei 顯示。</p>
+				</div>
 			</div>
 
 			<div class="event-list">
@@ -72,8 +76,8 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 				events.length === 0 && (
 					<div class="events-empty">
 						<p>{calendarStatus === "unavailable" ? "目前無法讀取活動資料，請至 Google Calendar 查看完整行程。" : "目前沒有公開的近期活動。"}</p>
-						<a class="text-link" href={CALENDAR_URL} target="_blank" rel="noreferrer">
-							查看活動日曆 <ArrowUpRight width={18} height={18} weight="bold" />
+						<a class="text-link" href={CALENDAR_SUBSCRIBE_URL} target="_blank" rel="noreferrer">
+							添加活動日曆 <ArrowUpRight width={18} height={18} weight="bold" />
 						</a>
 					</div>
 				)
@@ -424,8 +428,22 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 	}
 
 	.events-section .eyebrow,
-	.events-section .section-heading > p {
+	.events-heading-actions p {
 		color: var(--pine-700);
+	}
+
+	.events-heading-actions {
+		display: flex;
+		max-width: 560px;
+		align-items: flex-end;
+		flex-direction: column;
+		gap: 0.8rem;
+	}
+
+	.events-heading-actions p {
+		max-width: 520px;
+		margin: 0;
+		text-align: right;
 	}
 
 	.event-list {
@@ -860,6 +878,18 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 
 		.social-grid {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.events-heading-actions {
+			width: 100%;
+			max-width: none;
+			align-items: flex-start;
+		}
+
+		.events-heading-actions p {
+			text-align: left;
 		}
 	}
 

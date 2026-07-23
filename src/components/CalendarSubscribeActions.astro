@@ -1,0 +1,142 @@
+---
+import CalendarPlus from "phosphor-astro/CalendarPlus.astro";
+import Check from "phosphor-astro/Check.astro";
+import Copy from "phosphor-astro/Copy.astro";
+import { CALENDAR_FEED_URL, CALENDAR_SUBSCRIBE_URL } from "../consts.js";
+---
+
+<div class="calendar-actions" aria-label="訂閱 BambooFox 活動行事曆">
+	<a class="calendar-action primary" href={CALENDAR_SUBSCRIBE_URL} target="_blank" rel="noreferrer">
+		<CalendarPlus width={20} height={20} weight="bold" aria-hidden="true" />
+		<span>添加到 Google Calendar</span>
+	</a>
+	<button class="calendar-action secondary" type="button" data-copy-calendar data-calendar-url={CALENDAR_FEED_URL}>
+		<Copy class="copy-icon" width={20} height={20} weight="bold" aria-hidden="true" />
+		<Check class="check-icon" width={20} height={20} weight="bold" aria-hidden="true" />
+		<span data-copy-label>複製 iCal 網址</span>
+	</button>
+	<span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+</div>
+
+<script>
+	function copyWithFallback(value) {
+		const input = document.createElement("textarea");
+		input.value = value;
+		input.setAttribute("readonly", "");
+		input.style.position = "fixed";
+		input.style.opacity = "0";
+		document.body.append(input);
+		input.select();
+		const copied = document.execCommand("copy");
+		input.remove();
+
+		if (!copied) throw new Error("copy command was rejected");
+	}
+
+	for (const button of document.querySelectorAll("[data-copy-calendar]")) {
+		button.addEventListener("click", async () => {
+			const calendarUrl = button.getAttribute("data-calendar-url");
+			const label = button.querySelector("[data-copy-label]");
+			const status = button.parentElement?.querySelector("[data-copy-status]");
+
+			if (!calendarUrl || !label) return;
+
+			try {
+				if (navigator.clipboard && window.isSecureContext) {
+					await navigator.clipboard.writeText(calendarUrl);
+				} else {
+					copyWithFallback(calendarUrl);
+				}
+
+				button.setAttribute("data-copied", "true");
+				label.textContent = "已複製 iCal 網址";
+				if (status) status.textContent = "iCal 網址已複製到剪貼簿。";
+
+				window.setTimeout(() => {
+					button.removeAttribute("data-copied");
+					label.textContent = "複製 iCal 網址";
+				}, 2400);
+			} catch {
+				label.textContent = "無法複製，請重試";
+				if (status) status.textContent = "無法複製 iCal 網址，請重試。";
+			}
+		});
+	}
+</script>
+
+<style>
+	.calendar-actions {
+		display: flex;
+		max-width: 560px;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 0.65rem;
+	}
+
+	.calendar-action {
+		display: inline-flex;
+		min-height: 48px;
+		align-items: center;
+		justify-content: center;
+		gap: 0.55rem;
+		padding: 0.75rem 1rem;
+		border: 2px solid var(--pine-950);
+		border-radius: 999px;
+		color: var(--pine-950);
+		font-weight: 800;
+		line-height: 1;
+		cursor: pointer;
+		transition:
+			transform 180ms ease,
+			background-color 180ms ease,
+			color 180ms ease;
+	}
+
+	.calendar-action:hover {
+		transform: translateY(-3px);
+	}
+
+	.calendar-action.primary {
+		background: var(--pine-950);
+		color: var(--mist-100);
+	}
+
+	.calendar-action.primary:hover {
+		background: var(--pine-700);
+	}
+
+	.calendar-action.secondary {
+		background: transparent;
+	}
+
+	.calendar-action.secondary:hover,
+	.calendar-action.secondary[data-copied] {
+		background: var(--orange);
+	}
+
+	.check-icon {
+		display: none;
+	}
+
+	.calendar-action[data-copied] .copy-icon {
+		display: none;
+	}
+
+	.calendar-action[data-copied] .check-icon {
+		display: block;
+	}
+
+	@media (max-width: 900px) {
+		.calendar-actions {
+			width: 100%;
+			max-width: none;
+			justify-content: flex-start;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.calendar-action {
+			width: 100%;
+		}
+	}
+</style>

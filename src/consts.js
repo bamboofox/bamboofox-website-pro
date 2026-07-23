@@ -16,7 +16,7 @@ export const CTF_TEAMS = {
 
 export const CALENDAR_FEED_URL = "https://calendar.google.com/calendar/ical/nctucscbamboofox%40gmail.com/public/basic.ics";
 
-export const CALENDAR_URL = "https://calendar.google.com/calendar/embed?src=nctucscbamboofox%40gmail.com&ctz=Asia%2FTaipei";
+export const CALENDAR_SUBSCRIBE_URL = "https://calendar.google.com/calendar/u/0/r?cid=nctucscbamboofox@gmail.com";
 
 export const SOCIAL_LINKS = {
 	facebook: "https://www.facebook.com/NCTUCSC",
