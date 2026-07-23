@@ -12,7 +12,7 @@ import { getCollection } from "astro:content";
 import EventCard from "../components/EventCard.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import PostCover from "../components/PostCover.astro";
-import { CALENDAR_URL, SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from "../consts.js";
+import { CALENDAR_URL, CTF_TEAMS, SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from "../consts.js";
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getUpcomingEvents } from "../lib/calendar.js";
 import { getOrganizationSchema, getWebsiteSchema } from "../lib/seo.js";
@@ -27,7 +27,7 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 		<div class="hero-copy">
 			<p class="hero-label"><span></span> NYCU CYBER SECURITY CLUB</p>
 			<h1 id="hero-title"><span>以實作建立</span><br />資安能力。</h1>
-			<p class="hero-lead">交大網路安全策進會（NYCU Cyber Security Club）BambooFox 成立於 2014 年，透過資安課程、CTF 競賽與技術交流，培養資訊安全的分析與實作能力。</p>
+			<p class="hero-lead">BambooFox 資安戰隊成立於 2014 年，凝聚陽明交通大學校內對資訊安全有興趣的學生，透過系統化訓練、技術分享與 CTF 競賽，持續累積並傳承技術與經驗。</p>
 			<div class="hero-actions">
 				<a class="button" href="#events">
 					查看近期活動
@@ -94,7 +94,7 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 				<div class="card-number">01</div>
 				<BookOpenText width={38} height={38} weight="duotone" aria-hidden="true" />
 				<h3>系列課程</h3>
-				<p>涵蓋 Web Security、Reverse、Pwn 與其他資安領域，搭配示範與實作練習。</p>
+				<p>涵蓋 Web Security、Reverse、Pwn、門禁安全到其他資安領域，搭配示範與實作練習。</p>
 				<span>COURSES</span>
 			</article>
 
@@ -121,9 +121,34 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 			<div class="about-layout">
 				<div class="about-copy">
 					<p class="eyebrow">NYCU Cyber Security Club</p>
-					<h2>交大網路安全策進會</h2>
-					<p>交大網路安全策進會成立於 2014 年，BambooFox 為社群品牌。社團早期結合交大 DSNSLab、SQLab、資工系計中與臺灣駭客協會的資源，並以 CTF 競賽、資安研究與實務訓練為主要方向。</p>
-					<p>BambooFox 社群成員來自交大、清大、中央、中原、台科大等學校，持續參與國內外 CTF 競賽、資安社群活動與資訊安全推廣。</p>
+					<h2>BambooFox 與交大網路安全策進會</h2>
+					<p>
+						<a class="team-link" href={CTF_TEAMS.BambooFox} target="_blank" rel="noreferrer">BambooFox</a>{" "}
+						資安戰隊成立於 2014 年，由陽明交通大學網路安全實驗室（DSNSLab）、軟體品質實驗室（SQLab）的研究成員，以及系計中的助教共同組成。成立初衷為促進資安技術交流與經驗傳承，凝聚校內對資訊安全有興趣的學生，共同挑戰國內外頂尖資安競賽。
+					</p>
+					<p>
+						為建立更完善的資安學習環境，團隊於隔年以{" "}
+						<a class="team-link" href={CTF_TEAMS.BambooFox} target="_blank" rel="noreferrer">BambooFox</a>{" "}
+						為核心成立學生社團「交大網路安全策進會」，讓成員依照自身興趣與專長投入不同資安領域，並透過系統化的訓練、技術分享與實戰競賽，持續累積並傳承技術與經驗。
+					</p>
+					<p>
+						隨著社群持續發展，<a class="team-link" href={CTF_TEAMS.BambooFox} target="_blank" rel="noreferrer">BambooFox</a> 成員也逐漸組成多支競賽隊伍。2019 年，「<a
+							class="team-link"
+							href={CTF_TEAMS.BalsiFox}
+							target="_blank"
+							rel="noreferrer"
+						>
+							BalsiFox
+						</a>」成立；自 2021 年起，部分資深成員以「<a class="team-link" href={CTF_TEAMS.TSJ} target="_blank" rel="noreferrer">⚔️TSJ⚔️</a>」之名參與國際資安競賽；2024 年，新一代成員成立「<a
+							class="team-link"
+							href={CTF_TEAMS["竹狐"]}
+							target="_blank"
+							rel="noreferrer"
+						>
+							竹狐
+						</a>」，並與「星爆吉娃娃」及「牛肉湯」共同組成聯隊「<a class="team-link" href={CTF_TEAMS["星爆牛炒竹狐"]} target="_blank" rel="noreferrer">星爆牛炒竹狐</a>」。
+					</p>
+					<p>時至今日，社團成員仍持續活躍於國內外各大資安競賽與技術社群，展現陽明交通大學資安社群的實力。</p>
 				</div>
 
 				<aside class="about-stat" aria-label="BambooFox 成立資訊">
@@ -535,6 +560,23 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 		color: #36594b;
 		font-size: 1.05rem;
 		line-height: 1.9;
+	}
+
+	.team-link {
+		color: var(--pine-700);
+		font-weight: 800;
+		text-decoration: underline;
+		text-decoration-color: rgba(23, 98, 71, 0.4);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition:
+			color 180ms ease,
+			text-decoration-color 180ms ease;
+	}
+
+	.team-link:hover {
+		color: var(--pine-950);
+		text-decoration-color: currentColor;
 	}
 
 	.about-stat {

@@ -1,4 +1,4 @@
-import { CLUB_NAME, CLUB_NAME_ZH, SITE_DESCRIPTION, SITE_NAME, SOCIAL_LINKS } from "../consts.js";
+import { CLUB_NAME, CLUB_NAME_ZH, CTF_TEAMS, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SOCIAL_LINKS } from "../consts.js";
 
 const toURL = (value, site) => new URL(value, site).href;
 const toDateOnly = value => value.toISOString().slice(0, 10);
@@ -9,8 +9,8 @@ export function getOrganizationSchema(site) {
 		"@context": "https://schema.org",
 		"@type": "Organization",
 		"@id": `${url}#organization`,
-		name: CLUB_NAME,
-		alternateName: [SITE_NAME, CLUB_NAME_ZH],
+		name: SITE_TITLE,
+		alternateName: [SITE_NAME, CLUB_NAME_ZH, CLUB_NAME],
 		url,
 		logo: {
 			"@type": "ImageObject",
@@ -21,7 +21,7 @@ export function getOrganizationSchema(site) {
 		description: SITE_DESCRIPTION,
 		email: SOCIAL_LINKS.email.replace("mailto:", ""),
 		foundingDate: "2014",
-		sameAs: [SOCIAL_LINKS.facebook, SOCIAL_LINKS.instagram],
+		sameAs: [SOCIAL_LINKS.facebook, SOCIAL_LINKS.instagram, CTF_TEAMS.BambooFox],
 		parentOrganization: {
 			"@type": "CollegeOrUniversity",
 			name: "國立陽明交通大學",
@@ -38,8 +38,8 @@ export function getWebsiteSchema(site) {
 		"@type": "WebSite",
 		"@id": `${url}#website`,
 		url,
-		name: SITE_NAME,
-		alternateName: [CLUB_NAME, CLUB_NAME_ZH],
+		name: SITE_TITLE,
+		alternateName: [SITE_NAME, CLUB_NAME_ZH, CLUB_NAME],
 		description: SITE_DESCRIPTION,
 		inLanguage: "zh-Hant-TW",
 		publisher: { "@id": `${url}#organization` }

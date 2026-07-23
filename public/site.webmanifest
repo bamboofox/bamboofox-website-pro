@@ -1,7 +1,7 @@
 {
-	"name": "BambooFox｜NYCU Cyber Security Club",
+	"name": "BambooFox 交大網路安全策進會",
 	"short_name": "BambooFox",
-	"description": "交大網路安全策進會（NYCU Cyber Security Club）官方網站。",
+	"description": "BambooFox 資安戰隊成立於 2014 年，由陽明交通大學 DSNSLab、SQLab 研究成員與系計中助教共同組成；交大網路安全策進會透過系統化訓練、技術分享與 CTF 競賽，持續傳承資安技術與經驗。",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#082f24",

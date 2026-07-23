@@ -4,6 +4,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import sharp from "sharp";
+import { CTF_TEAMS, SITE_DESCRIPTION, SITE_TITLE } from "../src/consts.js";
 import { legacyRedirects } from "../src/data/legacyRedirects.js";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -119,14 +120,17 @@ for (const file of indexableFiles) {
 
 	const pageSchemas = schemas(html).filter(Boolean);
 	if (route === "/") {
-		assert(
-			pageSchemas.some(schema => hasType(schema, "Organization")),
-			"home: missing Organization JSON-LD"
-		);
-		assert(
-			pageSchemas.some(schema => hasType(schema, "WebSite")),
-			"home: missing WebSite JSON-LD"
-		);
+		assert(decodeHTML(html.match(/<title>([^<]+)<\/title>/)?.[1]) === SITE_TITLE, `home: title does not match ${SITE_TITLE}`);
+		assert(decodeHTML(meta(html, "description")) === SITE_DESCRIPTION, "home: description does not match the official introduction");
+		const organization = pageSchemas.find(schema => hasType(schema, "Organization"));
+		const website = pageSchemas.find(schema => hasType(schema, "WebSite"));
+		assert(Boolean(organization), "home: missing Organization JSON-LD");
+		assert(Boolean(website), "home: missing WebSite JSON-LD");
+		assert(organization?.name === SITE_TITLE, "home: Organization name does not match the site title");
+		assert(organization?.description === SITE_DESCRIPTION, "home: Organization description is outdated");
+		assert(organization?.sameAs?.includes(CTF_TEAMS.BambooFox), "home: Organization is missing the BambooFox CTFtime profile");
+		assert(website?.name === SITE_TITLE, "home: WebSite name does not match the site title");
+		assert(website?.description === SITE_DESCRIPTION, "home: WebSite description is outdated");
 	}
 	if (route === "/blog/") {
 		assert(
@@ -256,7 +260,8 @@ for (const file of sourceAuthors) {
 const robots = await readFile(path.join(dist, "robots.txt"), "utf8");
 assert(robots.includes(`Sitemap: ${site}/sitemap-index.xml`), "robots.txt is missing the production sitemap URL");
 const manifest = JSON.parse(await readFile(path.join(dist, "site.webmanifest"), "utf8"));
-assert(manifest.name.includes("NYCU Cyber Security Club"), "web manifest is missing the official club name");
+assert(manifest.name === SITE_TITLE, "web manifest name does not match the site title");
+assert(manifest.description === SITE_DESCRIPTION, "web manifest description is outdated");
 
 if (failures.length > 0) {
 	console.error(`SEO check failed with ${failures.length} issue${failures.length === 1 ? "" : "s"}:`);
