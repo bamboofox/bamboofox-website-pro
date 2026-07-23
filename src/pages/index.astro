@@ -6,7 +6,8 @@ import DiscordLogo from "phosphor-astro/DiscordLogo.astro";
 import FacebookLogo from "phosphor-astro/FacebookLogo.astro";
 import FlagCheckered from "phosphor-astro/FlagCheckered.astro";
 import InstagramLogo from "phosphor-astro/InstagramLogo.astro";
-import ShieldCheck from "phosphor-astro/ShieldCheck.astro";
+import PawPrint from "phosphor-astro/PawPrint.astro";
+import Student from "phosphor-astro/Student.astro";
 import UsersThree from "phosphor-astro/UsersThree.astro";
 import { getCollection } from "astro:content";
 import EventCard from "../components/EventCard.astro";
@@ -120,26 +121,19 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 		<div class="shell">
 			<div class="about-layout">
 				<div class="about-copy">
-					<p class="eyebrow">NYCU Cyber Security Club</p>
-					<h2>BambooFox 與交大網路安全策進會</h2>
+					<p class="eyebrow">BambooFox 與網路安全策進會是什麼？</p>
+					<h2>關於我們</h2>
 					<p>
 						<a class="team-link" href={CTF_TEAMS.BambooFox} target="_blank" rel="noreferrer">BambooFox</a>{" "}
 						資安戰隊成立於 2014 年，由陽明交通大學網路安全實驗室（DSNSLab）、軟體品質實驗室（SQLab）的研究成員，以及系計中的助教共同組成。成立初衷為促進資安技術交流與經驗傳承，凝聚校內對資訊安全有興趣的學生，共同挑戰國內外頂尖資安競賽。
 					</p>
 					<p>
-						為建立更完善的資安學習環境，團隊於隔年以{" "}
-						<a class="team-link" href={CTF_TEAMS.BambooFox} target="_blank" rel="noreferrer">BambooFox</a>{" "}
+						為建立更完善的資安學習環境，團隊於隔年以 BambooFox
 						為核心成立學生社團「交大網路安全策進會」，讓成員依照自身興趣與專長投入不同資安領域，並透過系統化的訓練、技術分享與實戰競賽，持續累積並傳承技術與經驗。
 					</p>
 					<p>
-						隨著社群持續發展，<a class="team-link" href={CTF_TEAMS.BambooFox} target="_blank" rel="noreferrer">BambooFox</a> 成員也逐漸組成多支競賽隊伍。2019 年，「<a
-							class="team-link"
-							href={CTF_TEAMS.BalsiFox}
-							target="_blank"
-							rel="noreferrer"
-						>
-							BalsiFox
-						</a>」成立；自 2021 年起，部分資深成員以「<a class="team-link" href={CTF_TEAMS.TSJ} target="_blank" rel="noreferrer">⚔️TSJ⚔️</a>」之名參與國際資安競賽；2024 年，新一代成員成立「<a
+						隨著社群持續發展，BambooFox 成員也逐漸組成多支競賽隊伍。2019 年，「<a class="team-link" href={CTF_TEAMS.BalsiFox} target="_blank" rel="noreferrer">BalsiFox</a>」成立；自 2021
+						年起，部分資深成員以「<a class="team-link" href={CTF_TEAMS.TSJ} target="_blank" rel="noreferrer">⚔️TSJ⚔️</a>」之名參與國際資安競賽；2024 年，新一代成員成立「<a
 							class="team-link"
 							href={CTF_TEAMS["竹狐"]}
 							target="_blank"
@@ -160,19 +154,19 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 
 			<div class="about-pillars">
 				<article>
-					<UsersThree width={30} height={30} weight="duotone" aria-hidden="true" />
-					<h3>跨校社群</h3>
-					<p>串聯不同學校與技術領域的成員，共同參與課程、研究與競賽。</p>
+					<FlagCheckered width={30} height={30} weight="duotone" aria-hidden="true" />
+					<h3>BambooFox</h3>
+					<p>由 Jeffxx、Atdog、寬寬於 2014 集結各實驗室人才組成的資安戰隊。</p>
 				</article>
 				<article>
-					<ShieldCheck width={30} height={30} weight="duotone" aria-hidden="true" />
-					<h3>實作導向</h3>
-					<p>從工具操作、漏洞分析到 CTF 解題，強調可驗證的實作成果。</p>
+					<Student width={30} height={30} weight="duotone" aria-hidden="true" />
+					<h3>網路安全策進會</h3>
+					<p>於 2015 創立之陽明交通大學社團。</p>
 				</article>
 				<article>
-					<BookOpenText width={30} height={30} weight="duotone" aria-hidden="true" />
-					<h3>知識分享</h3>
-					<p>公開教學、技術文章與 Write-up，保存可查證、可重現的技術內容。</p>
+					<PawPrint width={30} height={30} weight="duotone" aria-hidden="true" />
+					<h3>竹狐</h3>
+					<p>由第十屆社長 ching367436 於 2024 創立之資安戰隊。</p>
 				</article>
 			</div>
 		</div>
@@ -541,7 +535,7 @@ const jsonLd = [getOrganizationSchema(Astro.site), getWebsiteSchema(Astro.site)]
 	.about-layout {
 		display: grid;
 		grid-template-columns: 1.25fr 0.75fr;
-		align-items: stretch;
+		align-items: start;
 		gap: clamp(2rem, 7vw, 7rem);
 	}
 
